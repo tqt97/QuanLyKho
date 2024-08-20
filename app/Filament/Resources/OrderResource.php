@@ -130,7 +130,7 @@ class OrderResource extends Resource
                     ->searchable(isIndividual: true)
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('items.product.title_product')
+                Tables\Columns\TextColumn::make('items.product.product_title')
                     ->label(__('shop/order.title_product'))
                     ->sortable()
                     ->searchable(isIndividual: true),
@@ -292,7 +292,7 @@ class OrderResource extends Resource
             ->schema([
                 Forms\Components\Select::make('product_id')
                     ->label(__('shop/order.title_product'))
-                    ->options(Product::query()->pluck('title_product', 'id'))
+                    ->options(Product::query()->pluck('product_title', 'id'))
                     ->required()
                     ->reactive()
                     // ->afterStateUpdated(fn($state, Forms\Set $set) => $set('unit_price', Product::find($state)?->price ?? 0,))

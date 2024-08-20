@@ -18,16 +18,16 @@ class ProductFactory extends Factory
     {
         $title_product = $this->faker->name;
         return [
-            'title_popular' => $title_product,
-            'title_product' => $title_product,
+            'common_title' => $title_product,
+            'product_title' => $title_product,
+            'sell_title' => $title_product,
             'slug' => \Illuminate\Support\Str::slug($title_product),
             'description' => $this->faker->sentence,
             'dosage' => $this->faker->randomNumber(),
             'expiry_date' => $this->faker->dateTime,
-            'quantity_per_pack' => $this->faker->randomNumber(),
-            // 'category_id' => \App\Models\Category::factory(),
-            'price' => $this->faker->randomFloat(2, 0, 1000),
-            'is_active' => $this->faker->boolean,
+            'qty_per_product' => $this->faker->randomNumber(),
+            'original_price' => $this->faker->randomNumber(),
+            'sell_price' => $this->faker->randomNumber(),
         ];
     }
 }

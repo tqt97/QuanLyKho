@@ -13,20 +13,25 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('title_popular');
-            $table->string('title_product');
+
+            // title
+            $table->string('common_title');
+            $table->string('product_title');
+            $table->string('sell_title');
             $table->string('slug')->unique();
+
+            // additional information
             $table->text('description')->nullable();
             $table->string('image')->nullable();
+
             $table->text('dosage')->nullable(); // lieu dung
-            $table->dateTime('expiry_date')->nullable(); // ngay het han
-            $table->integer('quantity_per_pack')->nullable(); // so luong trong 1 goi
-            // $table->foreignId('brand_id')->nullable()->constrained()->nullOnDelete();
-            $table->decimal('price', 10, 2);
-            // $table->integer('quantity');
-            $table->boolean('is_active')->default(true);
-            $table->string('seo_title', 60)->nullable();
-            $table->string('seo_description', 160)->nullable();
+            $table->date('expiry_date')->nullable(); // ngay het han
+            $table->text('qty_per_product')->nullable(); // so luong trong 1 goi
+
+            // price
+            $table->double('original_price', 10, 2);
+            $table->double('sell_price', 10, 2);
+
             $table->softDeletes();
             $table->timestamps();
         });

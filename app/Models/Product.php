@@ -16,28 +16,21 @@ class Product extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'title_popular',
-        'title_product',
+        'common_title',
+        'product_title',
+        'sell_title',
         'slug',
+        'dosage',
+        'qty_per_product',
+        'original_price',
+        'sell_price',
         'description',
         'image',
-        'dosage',
         'expiry_date',
-        'quantity_per_pack',
-        'category_id',
-        'brand_id',
-
-        'price',
-        // 'quantity',
-        'is_active',
-
-        'seo_title',
-        'seo_description',
     ];
 
     protected $casts = [
-        'expiry_date' => 'datetime',
-        'is_active' => 'boolean'
+        'expiry_date' => 'date',
     ];
 
     /** @return BelongsTo<Brand,self> */
