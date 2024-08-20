@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'product' => 'Sản phẩm',
+    'product_count_numbers' => 'Số lượng sản phẩm',
+    'main_info' => 'Thông tin chính',
+    'title_product' => 'Tên sản phẩm',
+    'slug' => 'Slug',
+    'title_popular' => 'Tên thường gọi',
+    'price' => 'Giá',
+    'dosage' => 'Liều dùng',
+    'quantity_per_pack' => 'Số lượng trong 1 gói',
+    'expiry_date' => 'Ngày hết hạn',
+    'description' => 'Mô tả',
+    'seo_title' => 'Tiêu đề SEO',
+    'seo_description' => 'Mô tả SEO',
+    'is_active' => 'Kích hoạt',
+    'image' => 'Hình ảnh',
+    'is_visible' => 'Hiển thị',
+    'additional_info' => 'Thông tin bổ sung',
+    'is_visible_helper' => 'Bật để hiển thị sản phẩm trên trang web',
+    'title_popular_helper' => 'Tên thường gọi của sản phẩm',
+    'created_at' => 'Ngày tạo',
+    'updated_at' => 'Ngày cập nhật',
+    'deleted_at' => 'Ngày xóa',
+];

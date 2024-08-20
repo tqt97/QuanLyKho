@@ -5,10 +5,12 @@ namespace App\Providers\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\MaxWidth;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -27,6 +29,15 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->registration()
+            ->passwordReset()
+            ->emailVerification()
+            ->profile()
+            ->registration()
+            ->passwordReset()
+            ->emailVerification()
+            ->profile(isSimple: false)
+            ->authPasswordBroker('users')
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -53,6 +64,21 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            // ->collapsibleNavigationGroups(false)
+            ->sidebarCollapsibleOnDesktop()
+            ->sidebarFullyCollapsibleOnDesktop()
+            ->maxContentWidth(MaxWidth::ScreenTwoExtraLarge)
+            ->topNavigation()
+            ->spa()
+            ->unsavedChangesAlerts()
+            ->navigationGroups([
+                NavigationGroup::make()
+                    ->label(fn(): string => __('shop/navigation.shops'))
+                    ->icon('heroicon-o-shopping-cart'),
+                NavigationGroup::make()
+                    ->label(fn(): string => __('shop/navigation.accounts'))
+                    ->icon('heroicon-o-user-circle'),
+            ]);;
     }
 }
