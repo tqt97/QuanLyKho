@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Enums\OrderStatus;
 use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
+use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
 use Filament\Forms;
@@ -19,6 +20,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Schmeits\FilamentCharacterCounter\Forms\Components\TextInput;
+use Schmeits\FilamentCharacterCounter\Forms\Components\Textarea;
 
 class OrderResource extends Resource
 {
@@ -63,7 +66,7 @@ class OrderResource extends Resource
                             ->schema(static::getDetailsFormSchema())
                             ->columns(6),
 
-                        Forms\Components\Section::make(__('shop/order.order_items_label'))
+                        Forms\Components\Section::make(__('shop/order.cart'))
                             // ->icon('heroicon-m-squares-2x2')
                             ->description(__('shop/order.order_items_help_text'))
                             ->headerActions([
@@ -79,6 +82,7 @@ class OrderResource extends Resource
                             ]),
                     ])
                     ->columnSpan(['lg' => fn(?Order $record) => $record === null ? 2 : 2]),
+
                 Forms\Components\Group::make()
                     ->schema([
                         Forms\Components\Section::make(__('shop/order.cart_label'))
@@ -91,7 +95,7 @@ class OrderResource extends Resource
                                     // ->disabled()
                                     ->readOnly()
                                     ->numeric()
-                                    ->prefix('vnd')
+                                    ->suffix('vnd')
                                     ->default(0),
                             ])
                             ->columns(1),
@@ -108,7 +112,7 @@ class OrderResource extends Resource
                                     ->hidden(fn(?Order $record) => $record === null),
                             ])->columns(2),
                         Forms\Components\Section::make()->schema([
-                            Forms\Components\TextArea::make('notes')->label(__('shop/order.note'))
+                            TextArea::make('notes')->label(__('shop/order.note'))
                                 ->columnSpan('full'),
                         ])
                     ])
@@ -130,10 +134,10 @@ class OrderResource extends Resource
                     ->searchable(isIndividual: true)
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('items.product.product_title')
-                    ->label(__('shop/order.title_product'))
-                    ->sortable()
-                    ->searchable(isIndividual: true),
+                // Tables\Columns\TextColumn::make('items.product.product_title')
+                //     ->label(__('shop/order.title_product'))
+                //     ->sortable()
+                //     ->searchable(isIndividual: true),
                 Tables\Columns\TextColumn::make('customer_status')
                     ->label(__('shop/order.status')),
                 Tables\Columns\TextColumn::make('total_price')
@@ -149,13 +153,23 @@ class OrderResource extends Resource
                         'new' => 'success',
                         'old' => 'warning',
                     }),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label(__('shop/order.created_by'))
+                    ->description(function (Order $record) {
+                        // $msg = __('shop/order.created_by') . ': ' . $record->user->name . ' (' . $record->user->email . ')';
+                        // $msg = __('shop/order.created_at_description') . ': ' . $record->created_at->diffForHumans() . ' (' . $record->created_at->format('d-m-Y H:i:s') . ')';
+                        $msg = __('shop/order.created_at_description') . ': ' . $record->created_at->format('d-m-Y H:i') . ' (' . $record->created_at->diffForHumans() . ')';
+                        return $msg;
+                    })
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('shop/order.created_at'))
-                    ->dateTime()
+                    ->dateTime('d-m-Y H:i:s')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
@@ -232,35 +246,67 @@ class OrderResource extends Resource
             //     ->maxLength(32)
             //     ->unique(Order::class, 'number', ignoreRecord: true)->columnSpan(6),
 
-            Forms\Components\TextInput::make('uuid')
-                // ->disabled(fn(Order $order) => $order->exists)
-                ->label(__('shop/order.order_number'))
-                ->default(fn() => 'TL' . '-' . \Illuminate\Support\Str::random(8))
-                ->required()
-                ->columnSpanFull()
-                ->maxLength(16)
-                ->disabled()
-                ->dehydrated()
-                ->unique(Order::class, 'uuid', ignoreRecord: true),
+            // Forms\Components\TextInput::make('uuid')
+            //     // ->disabled(fn(Order $order) => $order->exists)
+            //     ->label(__('shop/order.order_number'))
+            //     ->default(fn() => 'TL' . '-' . \Illuminate\Support\Str::random(8))
+            //     ->required()
+            //     ->columnSpanFull()
+            //     ->maxLength(16)
+            //     ->disabled()
+            //     ->dehydrated()
+            //     ->unique(Order::class, 'uuid', ignoreRecord: true)
+            //     ->suffixAction(
+            //         Forms\Components\Actions\Action::make('copy')
+            //             ->icon('heroicon-s-clipboard-document-check')
+            //             ->action(function ($livewire, $state) {
+            //                 $livewire->js(
+            //                     'window.navigator.clipboard.writeText("' . $state . '");
+            //         $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+            //                 );
+            //             })
+            //     ),
 
             Forms\Components\Select::make('customer_id')
-                ->label(__('shop/order.customer_name'))
-                ->relationship('customer', 'name')
+                ->label(__('shop/order.customer_phone'))
+                ->relationship('customer', 'phone')
                 ->preload()
                 ->searchable()
                 ->required()
+                ->live()
                 ->createOptionForm([
-                    Forms\Components\TextInput::make('name')
+                    TextInput::make('name')
                         ->label(__('shop/order.customer_name'))
                         ->required()
-                        ->maxLength(255),
-                    Forms\Components\TextInput::make('phone')
+                        ->characterLimit(255)
+                        ->suffixAction(
+                            Forms\Components\Actions\Action::make('copy')
+                                ->icon('heroicon-s-clipboard-document-check')
+                                ->action(function ($livewire, $state) {
+                                    $livewire->js(
+                                        'window.navigator.clipboard.writeText("' . $state . '");
+                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+                                    );
+                                })
+                        ),
+                    TextInput::make('phone')
                         ->label(__('shop/order.phone'))
-                        ->maxLength(255),
+                        ->required()
+                        ->characterLimit(15)
+                        ->suffixAction(
+                            Forms\Components\Actions\Action::make('copy')
+                                ->icon('heroicon-s-clipboard-document-check')
+                                ->action(function ($livewire, $state) {
+                                    $livewire->js(
+                                        'window.navigator.clipboard.writeText("' . $state . '");
+                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+                                    );
+                                })
+                        ),
 
                     Forms\Components\Select::make('gender')
                         ->label(__('shop/order.gender'))
-                        ->placeholder('Select gender')
+                        ->placeholder(__('shop/order.select_gender'))
                         ->options([
                             'male' => __('shop/order.male'),
                             'female' => __('shop/order.female'),
@@ -273,21 +319,73 @@ class OrderResource extends Resource
                         ->modalHeading(__('shop/order.create_customer'))
                         ->modalSubmitActionLabel(__('shop/order.create_customer'))
                         ->modalWidth('lg');
-                })->columnSpan(3),
-
-            Forms\Components\ToggleButtons::make('customer_status')
-                ->label(__('shop/order.customer_order_status_label'))
-                ->inline()
-                ->options(OrderStatus::class)
-                ->default(OrderStatus::New)
-                ->required()->columnSpan(3),
+                })
+                ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set, $state) {
+                    // $set('phone', Customer::find($state)?->name);
+                    // set hint content foreach customer
+                    // $set('customer.phone', Customer::find($state)?->phone);
+                    $set('dynamic_hint', Customer::find($state)?->name);
+                })
+                // ->prefixAction(
+                //     Forms\Components\Actions\Action::make('create')
+                //         ->icon('heroicon-s-plus')
+                //         ->label(__('shop/order.create_customer'))
+                //         ->url(CustomerResource::getUrl('create'))
+                //         ->button()
+                // )
+                ->suffixAction(
+                    Forms\Components\Actions\Action::make('copy')
+                        ->icon('heroicon-s-clipboard-document-check')
+                        ->action(function ($livewire, $state) {
+                            $name = Customer::find($state)?->name;
+                            $livewire->js(
+                                'window.navigator.clipboard.writeText("' . $name . '");
+                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+                            );
+                        })
+                )
+                ->columnSpan('full'),
+            Forms\Components\TextInput::make('customer_name')
+                ->label(__('shop/order.customer_name'))
+                ->placeholder(function (Forms\Get $get) {
+                    $customer = Customer::find($get('customer_id'));
+                    return $customer?->name ?? __('shop/order.customer_phone_hint');
+                })
+                ->hidden(function (Forms\Get $get) {
+                    return ! $get('customer_id');
+                })
+                ->disabled()
+                ->label('')
+                // ->extraInputAttributes(['class' => 'text-muted'])
+                ->columnSpan('full'),
+            // Forms\Components\TextInput::make('customer.phone')
+            //     ->label(__('shop/order.customer_phone'))
+            //     // ->required()
+            //     ->readOnly()
+            //     ->suffixAction(
+            //         Forms\Components\Actions\Action::make('copy')
+            //             ->icon('heroicon-s-clipboard-document-check')
+            //             ->action(function ($livewire, $state) {
+            //                 $livewire->js(
+            //                     'window.navigator.clipboard.writeText("' . $state . '");
+            //         $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+            //                 );
+            //             })
+            //     )
+            //     ->columnSpan(3),
+            // Forms\Components\ToggleButtons::make('customer_status')
+            //     ->label(__('shop/order.customer_order_status_label'))
+            //     ->inline()
+            //     ->options(OrderStatus::class)
+            //     ->default(OrderStatus::New)
+            //     ->required()->columnSpan(3),
 
         ];
     }
 
     public static function getItemsRepeater(): Repeater
     {
-        return Repeater::make('items')->label(__('shop/order.order'))
+        return Repeater::make('items')->label(__('shop/order.cart'))
             ->relationship()
             ->schema([
                 Forms\Components\Select::make('product_id')
@@ -297,7 +395,7 @@ class OrderResource extends Resource
                     ->reactive()
                     // ->afterStateUpdated(fn($state, Forms\Set $set) => $set('unit_price', Product::find($state)?->price ?? 0,))
                     ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set, $state) {
-                        $set('price', Product::find($state)?->price ?? 0);
+                        $set('price', Product::find($state)?->sell_price ?? 0);
                         $set('total', 1 * $get('price'));
                     })
                     ->distinct()
@@ -305,7 +403,18 @@ class OrderResource extends Resource
                     ->columnSpan([
                         'md' => 6,
                     ])
-                    ->searchable(),
+                    ->searchable()
+                    ->suffixAction(
+                        Forms\Components\Actions\Action::make('copy')
+                            ->icon('heroicon-s-clipboard-document-check')
+                            ->action(function ($livewire, $state) {
+                                $name = Product::find($state)?->product_title;
+                                $livewire->js(
+                                    'window.navigator.clipboard.writeText("' . $name . '");
+                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+                                );
+                            })
+                    ),
 
                 Forms\Components\TextInput::make('quantity')
                     ->label(__('shop/order.quantity'))
@@ -324,17 +433,20 @@ class OrderResource extends Resource
 
                 Forms\Components\TextInput::make('price')
                     ->label(__('shop/order.unit_price'))
-                    ->disabled()
-                    ->dehydrated()
+                    // ->disabled()
+                    ->readOnly()
+                    // ->dehydrated()
                     ->numeric()
-                    ->reactive()
+                    // ->reactive()
                     ->required()
                     ->columnSpan([
                         'md' => 2,
                     ]),
                 Forms\Components\TextInput::make('total')
                     ->label(__('shop/order.total_single_product'))
-                    ->disabled()
+                    // ->disabled()
+                    ->reactive()
+                    ->readOnly()
                     ->numeric()
                     ->required()
                     ->columnSpan([
@@ -355,7 +467,7 @@ class OrderResource extends Resource
                         // }
 
                         // $total += ((($product->price + $product->vat) - $getDiscount) * $orderItem['qty']);
-                        $total_price += ($product->price * $orderItem['quantity']);
+                        $total_price += ($product->sell_price * $orderItem['quantity']);
                         // $discount += ($getDiscount * $orderItem['qty']);
                         // $vat +=  ($product->vat * $orderItem['qty']);
                     }
@@ -391,7 +503,7 @@ class OrderResource extends Resource
                 'md' => 12,
             ])
             ->required()
-            ->reorderableWithButtons()
+            // ->reorderableWithButtons()
             ->collapsible()
             ->itemLabel(fn(array $state): ?string => Product::find($state['product_id'])?->title_popular ? __('shop/order.title_popular_label') . Product::find($state['product_id'])?->title_popular : null);
     }

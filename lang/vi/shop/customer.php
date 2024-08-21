@@ -11,4 +11,8 @@ return [
     'male' => 'Nam',
     'female' => 'Nữ',
     'count_number_customers' => 'Số lượng khách hàng',
+    'gender_options' => [
+        'male' => 'Nam',
+        'female' => 'Nữ',
+    ]
 ];

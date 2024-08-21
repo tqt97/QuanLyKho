@@ -17,7 +17,7 @@ return new class extends Migration
             // title
             $table->string('common_title');
             $table->string('product_title');
-            $table->string('sell_title');
+            // $table->string('sell_title');
             $table->string('slug')->unique();
 
             // additional information
@@ -26,11 +26,11 @@ return new class extends Migration
 
             $table->text('dosage')->nullable(); // lieu dung
             $table->date('expiry_date')->nullable(); // ngay het han
-            $table->text('qty_per_product')->nullable(); // so luong trong 1 goi
+            $table->string('qty_per_product')->nullable(); // so luong trong 1 goi
 
             // price
-            $table->double('original_price', 10, 2);
-            $table->double('sell_price', 10, 2);
+            $table->double('original_price')->nullable();
+            $table->double('sell_price');
 
             $table->softDeletes();
             $table->timestamps();

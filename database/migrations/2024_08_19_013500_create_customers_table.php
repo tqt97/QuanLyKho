@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->index();
+            $table->string('name');
             $table->enum('gender', ['male', 'female']);
-            $table->string('phone')->nullable();
+            $table->string('phone')->unique()->index();
             $table->softDeletes();
             $table->timestamps();
         });

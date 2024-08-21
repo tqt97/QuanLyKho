@@ -28,7 +28,7 @@ class ListOrders extends ListRecords
     {
         return [
             'all' => Tab::make(__('shop/order.tabs.all')),
-            'today' => Tab::make(__())
+            'today' => Tab::make(__('shop/order.tabs.today'))
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('created_at', '>', now()->startOfDay())),
             'this_week' => Tab::make(__('shop/order.tabs.this_week'))
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('created_at', '>', now()->subWeek())),

@@ -26,6 +26,9 @@ class CreateOrder extends CreateRecord
     {
         $data['user_id'] = auth()?->id() ?? null;
 
+        $uid = uniqid();
+        $data['uuid'] = 'TL-' . $uid;
+
         return $data;
     }
 

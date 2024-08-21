@@ -85,6 +85,16 @@ class CustomerResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('gender')
                     ->label(__('shop/customer.gender'))
+                    ->searchable()
+                    ->badge()
+                    // ->color(fn(string $state): string => match ($state) {
+                    //     'male' => 'success',
+                    //     'female' => 'warning',
+                    // })
+                    // ->label(fn(string $state): string => match ($state) {
+                    //     'male' => __('shop/customer.gender.male'),
+                    //     'female' => __('shop/customer.gender.female'),
+                    // })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('phone')
                     ->label(__('shop/customer.phone'))
@@ -97,9 +107,9 @@ class CustomerResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('shop/customer.created_at'))
-                    ->dateTime()
+                    ->dateTime('d-m-Y H:i:s')
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label(__('shop/customer.updated_at'))
                     ->dateTime()

@@ -18,17 +18,21 @@ return new class extends Migration
             // customer_id is nullable because the customer can be a guest
             $table->foreignId('customer_id')->nullable()->constrained('customers')->nullOnDelete();
 
+            // customer phone number is required because the customer can be a guest
+            // $table->string('customer_phone')->nullable();
+
             // user_id is nullable because the order can be created by a guest
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
 
             // Prices
             $table->double('total_price')->default(0)->nullable();
-            $table->double('discount')->default(0)->nullable();
-            $table->double('vat')->default(0)->nullable();
+            // $table->double('discount')->default(0)->nullable();
+            // $table->double('vat')->default(0)->nullable();
 
 
             // Status of customer when creating the order (new or old)
-            $table->enum('customer_status', ['new', 'old'])->default('new');
+            // $table->enum('customer_status', ['new', 'old'])->default('new');
+
 
             // Notes
             $table->text('notes')->nullable();

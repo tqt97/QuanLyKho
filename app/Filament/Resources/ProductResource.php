@@ -27,6 +27,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 use Pages\ViewProduct;
+use Schmeits\FilamentCharacterCounter\Forms\Components\TextInput;
+use Schmeits\FilamentCharacterCounter\Forms\Components\Textarea;
 
 class ProductResource extends Resource
 {
@@ -64,27 +66,14 @@ class ProductResource extends Resource
             ->schema([
                 Forms\Components\Group::make()
                     ->schema([
-                        // use Filament\Forms\Components\Actions\Action;
-
-                        Forms\Components\TextInput::make('copyContent')
-                            ->suffixAction(
-                                Forms\Components\Actions\Action::make('copy')
-                                    ->icon('heroicon-s-clipboard-document-check')
-                                    ->action(function ($livewire, $state) {
-                                        $livewire->js(
-                                            'window.navigator.clipboard.writeText("' . $state . '");
-                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
-                                        );
-                                    })
-                            ),
-                        Forms\Components\Section::make(__('shop/product.main_info_product'))
-                            ->icon('heroicon-o-information-circle')
+                        Forms\Components\Section::make()
+                            // ->icon('heroicon-o-information-circle')
                             ->schema([
-                                Forms\Components\TextInput::make('product_title')
+                                TextInput::make('product_title')
                                     ->label(__('shop/product.title_product'))
-                                    ->helperText(__('shop/product.title_product_helper'))
+                                    ->hint(__('shop/product.title_product_helper'))
                                     ->required()
-                                    ->maxLength(255)
+                                    ->characterLimit(255)
                                     ->live(onBlur: true)
                                     ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
                                         if ($operation !== 'create') {
@@ -92,37 +81,75 @@ class ProductResource extends Resource
                                         }
 
                                         $set('slug', Str::slug($state));
-                                    })->columnSpan(1),
-                                Forms\Components\TextInput::make('slug')
+                                    })
+                                    ->suffixAction(
+                                        Forms\Components\Actions\Action::make('copy')
+                                            ->icon('heroicon-s-clipboard-document-check')
+                                            ->action(function ($livewire, $state) {
+                                                $livewire->js(
+                                                    'window.navigator.clipboard.writeText("' . $state . '");
+                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+                                                );
+                                            })
+                                    )
+                                    ->columnSpan('full'),
+
+                                TextInput::make('common_title')
+                                    ->label(__('shop/product.title_popular'))
+                                    ->hint(__('shop/product.title_popular_helper'))
+                                    ->required()
+                                    ->maxLength(255)
+                                    //                 ->suffixAction(
+                                    //                     Forms\Components\Actions\Action::make('copy')
+                                    //                         ->icon('heroicon-s-clipboard-document-check')
+                                    //                         ->action(function ($livewire, $state) {
+                                    //                             $livewire->js(
+                                    //                                 'window.navigator.clipboard.writeText("' . $state . '");
+                                    // $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+                                    //                             );
+                                    //                         })
+                                    //                 )
+                                    ->columnSpan(1),
+                                TextInput::make('slug')
                                     ->label(__('shop/product.slug'))
+                                    ->hint(__('shop/product.slug_helper'))
                                     ->disabled()
                                     ->dehydrated()
                                     ->required()
                                     ->maxLength(255)
                                     ->unique(Product::class, 'slug', ignoreRecord: true)->columnSpan(1),
-                                Forms\Components\TextInput::make('common_title')
-                                    ->label(__('shop/product.title_popular'))
-                                    ->helperText(__('shop/product.title_popular_helper'))
-                                    ->required()
-                                    ->maxLength(255)->columnSpan('full'),
-                                Forms\Components\TextInput::make('sell_title')
-                                    ->label(__('shop/product.title_sell'))
-                                    ->helperText(__('shop/product.title_sell_helper'))
-                                    ->required()
-                                    ->maxLength(255)->columnSpan('full'),
-                                Forms\Components\TextArea::make('dosage')
+                                //             TextInput::make('sell_title')
+                                //                 ->label(__('shop/product.title_sell'))
+                                //                 ->helperText(__('shop/product.title_sell_helper'))
+                                //                 ->required()
+                                //                 ->maxLength(255)
+                                //                 ->suffixAction(
+                                //                     Forms\Components\Actions\Action::make('copy')
+                                //                         ->icon('heroicon-s-clipboard-document-check')
+                                //                         ->action(function ($livewire, $state) {
+                                //                             $livewire->js(
+                                //                                 'window.navigator.clipboard.writeText("' . $state . '");
+                                // $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+                                //                             );
+                                //                         })
+                                //                 )
+                                //                 ->columnSpan('full'),
+                                TextArea::make('dosage')
                                     ->label(__('shop/product.dosage'))
+                                    ->rows(3)
                                     ->required()
                                     ->columnSpanFull(),
 
-                                Forms\Components\TextArea::make('description')
+                                TextArea::make('description')
                                     ->label(__('shop/product.description'))
+                                    ->rows(5)
+                                    // ->cols(5)
                                     ->columnSpan('full'),
                             ])->columns(2),
                         // Forms\Components\Tabs\Tab::make('SEO')
                         //     ->icon('heroicon-o-tag')
                         //     ->schema([
-                        //         Forms\Components\TextInput::make('seo_title')
+                        //         TextInput::make('seo_title')
                         //             ->label(__('shop/product.seo_title'))
                         //             ->columnSpan('full'),
                         //         Forms\Components\Textarea::make('seo_description')
@@ -130,39 +157,56 @@ class ProductResource extends Resource
                         //             ->columnSpan('full'),
                         //     ])
                         //     ->columns(2),
-                    ])->columnSpan(['lg' => 2]),
+                    ])
+
+                    ->columnSpan(['lg' => 2]),
 
 
                 Forms\Components\Group::make()
                     ->schema([
-                        Forms\Components\Section::make(__('shop/product.additional_info'))
-                            ->icon('heroicon-o-adjustments-horizontal')
+                        Forms\Components\Section::make()
+                            // ->icon('heroicon-o-adjustments-horizontal')
                             ->schema([
                                 Forms\Components\FileUpload::make('image')
-                                    ->label(__('shop/product.image')),
+                                    ->label(__('shop/product.image'))
+                                    ->directory('products')
+                                    ->preserveFilenames()
+                                    ->imageEditor()
+                                    ->fetchFileInformation(false)
+                                    ->image(),
                                 // Forms\Components\Toggle::make('is_visible')
                                 //     ->label(__('shop/product.is_visible'))
                                 //     ->helperText(__('shop/product.is_visible_helper'))
                                 //     ->default(true),
-                                Forms\Components\TextInput::make('original_price')
+                                TextInput::make('original_price')
                                     ->label(__('shop/product.original_price'))
                                     ->numeric()
                                     ->rules(['regex:/^\d{1,6}(\.\d{0,2})?$/'])
+                                    // ->suffix('vnd')
+                                    ->suffixIcon('heroicon-m-currency-dollar')
                                     ->columnSpan(1),
 
-                                Forms\Components\TextInput::make('sell_price')
+                                TextInput::make('sell_price')
                                     ->label(__('shop/product.sell_price'))
                                     ->numeric()
                                     ->rules(['regex:/^\d{1,6}(\.\d{0,2})?$/'])
+                                    ->suffixIcon('heroicon-m-currency-dollar')
+                                    // ->suffix('vnd')
                                     ->required()->columnSpan(1),
-                                Forms\Components\TextInput::make('qty_per_product')
+                                TextInput::make('qty_per_product')
                                     ->label(__('shop/product.quantity_per_pack'))
+                                    ->hint(__('shop/product.quantity_per_pack_helper'))
+                                    ->characterLimit(255)
                                     ->required()
                                     ->columnSpan(1),
-                                Forms\Components\DateTimePicker::make('expiry_date')
+                                Forms\Components\DatePicker::make('expiry_date')
                                     ->label(__('shop/product.expiry_date'))
-                                    ->required()->columnSpan(1),
-                            ])->collapsible(),
+                                    // ->format('d/m/Y')
+                                    // ->displayFormat('d/m/Y')
+                                    ->required()
+                                    ->locale('vi')
+                                    ->columnSpan(1),
+                            ]),
                     ])
                     ->columnSpan(['lg' => 1]),
             ])->columns(3);
@@ -172,30 +216,19 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('image')
+                    ->label(__('shop/product.image'))
+                    ->alignCenter()
+                    ->square(),
                 Tables\Columns\TextColumn::make('common_title')
                     ->label(__('shop/product.title_popular'))
-            //         ->prefixAction(
-            //             Forms\Components\Actions\Action::make('copy')
-            //                 ->icon('heroicon-s-clipboard-document-check')
-            //                 ->action(function ($livewire, $state) {
-            //                     $livewire->js(
-            //                         'window.navigator.clipboard.writeText("' . $state . '");
-            // $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
-            //                     )}))
-                    ->prefixAction(
-                        Forms\Components\Actions\Action::make('copy')
-                            ->icon('heroicon-s-clipboard-document-check')
-                            ->action(function ($livewire, $state) {
-                                $livewire->js(
-                                    'window.navigator.clipboard.writeText("' . $state . '");
-            $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
-                                );
-                            })
-                    )
+                    // ->description(fn(Product $record): string => $record->dosage . ' - ' . $record->qty_per_product)
+                    ->copyable()
                     ->searchable(isIndividual: true)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('product_title')
                     ->label(__('shop/product.title_product'))
+                    ->copyable()
                     ->searchable(isIndividual: true)
                     ->sortable(),
                 // Tables\Columns\TextColumn::make('title_sell')
@@ -204,7 +237,7 @@ class ProductResource extends Resource
                 //     ->sortable(),
                 Tables\Columns\TextColumn::make('expiry_date')
                     ->label(__('shop/product.expiry_date'))
-                    ->dateTime()
+                    ->date('m/Y')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('qty_per_product')
                     ->label(__('shop/product.quantity_per_pack'))
@@ -240,57 +273,84 @@ class ProductResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([
-                Tables\Filters\TrashedFilter::make(),
-                Tables\Filters\Filter::make('created_from')
-                    ->form([
-                        Forms\Components\DatePicker::make('created_from'),
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['created_from'],
-                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
-                            );
-                    }),
-                Tables\Filters\Filter::make('created_until')
-                    ->form([
-                        Forms\Components\DatePicker::make('created_until'),
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['created_until'],
-                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
-                            );
-                    })->default(now()),
-                Tables\Filters\Filter::make('price')
-                    ->form([
-                        Forms\Components\TextInput::make('price'),
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['price'],
-                                fn(Builder $query, $price): Builder => $query->where('price', $price),
-                            )
-                            ->when(
-                                $data['price'],
-                                fn(Builder $query, $price): Builder => $query->where('price', '>=', $price),
-                            )
-                            ->when(
-                                $data['price'],
-                                fn(Builder $query, $price): Builder => $query->where('price', '<=', $price),
-                            );
-                    }),
+            ->filters(
+                [
+                    // Tables\Filters\TrashedFilter::make(),
+                    // Tables\Filters\Filter::make('created_from')
+                    //     ->form([
+                    //         Forms\Components\DatePicker::make('created_from')->label(__('shop/product.created_from')),
+                    //     ])
+                    //     ->query(function (Builder $query, array $data): Builder {
+                    //         return $query
+                    //             ->when(
+                    //                 $data['created_from'],
+                    //                 fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                    //             );
+                    //     }),
+                    // Tables\Filters\Filter::make('created_until')
+                    //     ->form([
+                    //         Forms\Components\DatePicker::make('created_until')->label(__('shop/product.created_until')),
+                    //     ])
+                    //     ->query(function (Builder $query, array $data): Builder {
+                    //         return $query
+                    //             ->when(
+                    //                 $data['created_until'],
+                    //                 fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                    //             );
+                    //     })->default(now()),
 
-                QueryBuilder::make()
-                    ->constraints([
-                        TextConstraint::make('title_popular')->label(__('shop/product.title_popular'))->icon('heroicon-o-queue-list'),
-                        TextConstraint::make('title_product')->label(__('shop/product.title_product'))->icon('heroicon-o-queue-list'),
-                    ])
+                    // Tables\Filters\Filter::make('price')
+                    //     ->form([
+                    //         Forms\Components\DatePicker::make('price')->label(__('shop/product.price_from')),
+                    //     ])
+                    //     ->query(function (Builder $query, array $data): Builder {
+                    //         return $query
+                    //             ->when(
+                    //                 $data['price'],
+                    //                 fn(Builder $query, $price): Builder => $query->whereDate('price', '>=', $price),
+                    //             );
+                    //     }),
+                    // Tables\Filters\Filter::make('price')->label(__('shop/product._or'))
+                    //     ->form([
+                    //         Forms\Components\TextInput::make('price')->label(__('shop/product.price_until')),
+                    //     ])
+                    //     ->query(function (Builder $query, array $data): Builder {
+                    //         return $query
+                    //             ->when(
+                    //                 $data['price'],
+                    //                 fn(Builder $query, $price): Builder => $query->whereDate('price', '<=', $price),
+                    //             );
+                    //     }),
+                    // Tables\Filters\Filter::make('price')
+                    //     ->form([
+                    //         TextInput::make('price'),
+                    //     ])
+                    //     ->query(function (Builder $query, array $data): Builder {
+                    //         return $query
+                    //             ->when(
+                    //                 $data['price'],
+                    //                 fn(Builder $query, $price): Builder => $query->where('price', $price),
+                    //             )
+                    //             ->when(
+                    //                 $data['price'],
+                    //                 fn(Builder $query, $price): Builder => $query->where('price', '>=', $price),
+                    //             )
+                    //             ->when(
+                    //                 $data['price'],
+                    //                 fn(Builder $query, $price): Builder => $query->where('price', '<=', $price),
+                    //             );
+                    //     }),
 
-            ], layout: Tables\Enums\FiltersLayout::AboveContent)
+                    QueryBuilder::make()
+                        ->constraints([
+                            TextConstraint::make('title_popular')->label(__('shop/product.title_popular'))->icon('heroicon-o-cube'),
+                            TextConstraint::make('title_product')->label(__('shop/product.title_product'))->icon('heroicon-o-cube'),
+                            NumberConstraint::make('price')->label(__('shop/product.price'))->icon('heroicon-o-currency-dollar'),
+                        ])
+
+                ],
+                // layout: Tables\Enums\FiltersLayout::AboveContent
+            )
             ->filtersFormColumns(4)
             ->actions([
                 Tables\Actions\ViewAction::make()->modalWidth(MaxWidth::SevenExtraLarge)->modal(),
@@ -303,7 +363,9 @@ class ProductResource extends Resource
                     Tables\Actions\RestoreBulkAction::make(),
                 ]),
             ])
-            // ->defaultSort('created_at', 'desc')
+            ->recordUrl(null)
+            ->recordAction(Tables\Actions\ViewAction::class)
+            ->defaultSort('created_at', 'desc')
             // ->defaultGroup('title_popular')
             // ->recordUrl(
             //     fn(Model $record): string => Pages\ViewProduct::getUrl([$record->id]),
@@ -323,7 +385,7 @@ class ProductResource extends Resource
         return [
             'index' => Pages\ListProducts::route('/'),
             'create' => Pages\CreateProduct::route('/create'),
-            // 'view' => Pages\ViewProduct::route('/{record}'),
+            'view' => Pages\ViewProduct::route('/{record}'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
         ];
     }

@@ -18,7 +18,7 @@ class Product extends Model
     protected $fillable = [
         'common_title',
         'product_title',
-        'sell_title',
+        // 'sell_title',
         'slug',
         'dosage',
         'qty_per_product',
@@ -30,7 +30,7 @@ class Product extends Model
     ];
 
     protected $casts = [
-        'expiry_date' => 'date',
+        'expiry_date' => 'date:d-m-Y',
     ];
 
     /** @return BelongsTo<Brand,self> */

@@ -57,4 +57,9 @@ return [
         'this_month' => 'Tháng này',
         'this_year' => 'Năm nay',
     ],
+    'customer_phone' => 'Số điện thoại',
+    'select_gender' => 'Chọn giới tính',
+    'created_by' => 'Người tạo',
+    'created_at_description' => 'Được tạo vào lúc',
+    'cart' => 'Giỏ hàng',
 ];

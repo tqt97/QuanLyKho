@@ -20,7 +20,7 @@ class ProductFactory extends Factory
         return [
             'common_title' => $title_product,
             'product_title' => $title_product,
-            'sell_title' => $title_product,
+            // 'sell_title' => $title_product,
             'slug' => \Illuminate\Support\Str::slug($title_product),
             'description' => $this->faker->sentence,
             'dosage' => $this->faker->randomNumber(),

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\GenderEnums;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,7 +19,7 @@ class Customer extends Model
     ];
 
     protected $casts = [
-       //
+        'gender' => GenderEnums::class,
     ];
 
     public function orders()
