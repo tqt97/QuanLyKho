@@ -103,14 +103,14 @@ class OrderResource extends Resource
                             ->schema([
                                 Forms\Components\Placeholder::make('created_at')
                                     ->label(__('shop/order.created_at'))
-                                    ->content(fn(?Order $record): ?string => $record->created_at?->diffForHumans())
-                                    ->hidden(fn(?Order $record) => $record === null),
+                                    ->content(fn(?Order $record): ?string => $record->created_at?->diffForHumans()),
 
                                 Forms\Components\Placeholder::make('updated_at')
                                     ->label(__('shop/order.updated_at'))
-                                    ->content(fn(?Order $record): ?string => $record->updated_at?->diffForHumans())
-                                    ->hidden(fn(?Order $record) => $record === null),
-                            ])->columns(2),
+                                    ->content(fn(?Order $record): ?string => $record->updated_at?->diffForHumans()),
+                            ])
+                            ->hidden(fn(?Order $record) => $record === null)
+                            ->columns(2),
                         Forms\Components\Section::make()->schema([
                             TextArea::make('notes')->label(__('shop/order.note'))
                                 ->columnSpan('full'),
@@ -505,6 +505,6 @@ class OrderResource extends Resource
             ->required()
             // ->reorderableWithButtons()
             ->collapsible()
-            ->itemLabel(fn(array $state): ?string => Product::find($state['product_id'])?->title_popular ? __('shop/order.title_popular_label') . Product::find($state['product_id'])?->title_popular : null);
+            ->itemLabel(fn(array $state): ?string => Product::find($state['product_id'])?->common_title ? __('shop/order.title_popular_label') . Product::find($state['product_id'])?->common_title : null);
     }
 }
