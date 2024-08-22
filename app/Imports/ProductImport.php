@@ -29,6 +29,7 @@ class ProductImport implements ToModel,WithHeadingRow
             'qty_per_product' => $row['qty_per_product'],
             'original_price' => $row['original_price'],
             'sell_price' => $row['sell_price'],
+            'image' => $row['image'],
         ]);
     }
 }
