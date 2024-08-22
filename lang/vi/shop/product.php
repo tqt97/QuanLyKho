@@ -39,4 +39,6 @@ return [
     'price_to' => 'Giá đến',
     'slug_helper' => 'Slug của sản phẩm',
     'quantity_per_pack_helper' => 'Số lượng trong mỗi sản phẩm',
+    'import_product' => 'Thêm sản phẩm bằng file Excel',
+    'import_success' => 'Thêm sản phẩm thành công',
 ];

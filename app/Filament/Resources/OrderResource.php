@@ -208,7 +208,7 @@ class OrderResource extends Resource
                                     'items',
                                     []
                                 )),
-                            ExportAction::make()
+                            // ExportAction::make()
                         ])
                         ->schema([
                             static::getItemsRepeater(),

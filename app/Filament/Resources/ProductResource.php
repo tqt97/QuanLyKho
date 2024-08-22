@@ -2,34 +2,35 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ProductResource\Pages;
-use App\Filament\Resources\ProductResource\RelationManagers;
-use App\Models\Product;
 use Filament\Forms;
+use Filament\Tables;
+use Pages\ViewProduct;
+use App\Models\Product;
 use Filament\Forms\Form;
-use Filament\Infolists\Components\Fieldset;
-use Filament\Infolists\Components\Section;
-use Filament\Infolists\Components\Tabs;
-use Filament\Infolists\Components\TextEntry;
+use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use App\Imports\ProductImport;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\MaxWidth;
-use Filament\Tables;
-use Filament\Tables\Filters\QueryBuilder;
-use Filament\Tables\Filters\QueryBuilder\Constraints\BooleanConstraint;
-use Filament\Tables\Filters\QueryBuilder\Constraints\DateConstraint;
-use Filament\Tables\Filters\QueryBuilder\Constraints\NumberConstraint;
-use Filament\Tables\Filters\QueryBuilder\Constraints\TextConstraint;
-
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
+use Filament\Infolists\Components\Tabs;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Tables\Filters\QueryBuilder;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\Fieldset;
+use Filament\Infolists\Components\TextEntry;
+
+use App\Filament\Resources\ProductResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Str;
-use Pages\ViewProduct;
-use Schmeits\FilamentCharacterCounter\Forms\Components\TextInput;
-use Schmeits\FilamentCharacterCounter\Forms\Components\Textarea;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use App\Filament\Resources\ProductResource\RelationManagers;
+use Schmeits\FilamentCharacterCounter\Forms\Components\Textarea;
+use Schmeits\FilamentCharacterCounter\Forms\Components\TextInput;
+use Filament\Tables\Filters\QueryBuilder\Constraints\DateConstraint;
+use Filament\Tables\Filters\QueryBuilder\Constraints\TextConstraint;
+use Filament\Tables\Filters\QueryBuilder\Constraints\NumberConstraint;
+use Filament\Tables\Filters\QueryBuilder\Constraints\BooleanConstraint;
 
 class ProductResource extends Resource
 {
@@ -354,7 +355,9 @@ class ProductResource extends Resource
             )
             ->filtersFormColumns(4)
             ->actions([
-                // Tables\Actions\ViewAction::make()->modalWidth(MaxWidth::SevenExtraLarge)->modal(),
+                Tables\Actions\ViewAction::make()
+                // ->modalWidth(MaxWidth::SevenExtraLarge)->modal()
+                ,
                 Tables\Actions\EditAction::make(),
 
             ])
