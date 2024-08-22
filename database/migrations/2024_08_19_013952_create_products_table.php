@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('image')->nullable();
 
             $table->text('dosage')->nullable(); // lieu dung
-            $table->date('expiry_date')->nullable(); // ngay het han
+            $table->string('expiry_date')->nullable(); // ngay het han
             $table->string('qty_per_product')->nullable(); // so luong trong 1 goi
 
             // price

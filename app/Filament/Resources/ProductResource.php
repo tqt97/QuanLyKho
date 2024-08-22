@@ -201,12 +201,13 @@ class ProductResource extends Resource
                                     ->characterLimit(255)
                                     ->required()
                                     ->columnSpan(1),
-                                Forms\Components\DatePicker::make('expiry_date')
+                                TextInput::make('expiry_date')
                                     ->label(__('shop/product.expiry_date'))
+                                    ->suffixIcon('heroicon-m-calendar')
                                     // ->format('d/m/Y')
                                     // ->displayFormat('d/m/Y')
-                                    ->required()
-                                    ->locale('vi')
+                                    // ->required()
+                                    // ->locale('vi')
                                     ->columnSpan(1),
                             ]),
                     ])
@@ -239,7 +240,7 @@ class ProductResource extends Resource
                 //     ->sortable(),
                 Tables\Columns\TextColumn::make('expiry_date')
                     ->label(__('shop/product.expiry_date'))
-                    ->date('m/Y')
+                    // ->date('m/Y')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('qty_per_product')
                     ->label(__('shop/product.quantity_per_pack'))
@@ -355,10 +356,10 @@ class ProductResource extends Resource
             )
             ->filtersFormColumns(4)
             ->actions([
+                Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make()
                 // ->modalWidth(MaxWidth::SevenExtraLarge)->modal()
                 ,
-                Tables\Actions\EditAction::make(),
 
             ])
             ->bulkActions([

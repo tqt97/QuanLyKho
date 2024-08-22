@@ -28,9 +28,9 @@ class Product extends Model
         'expiry_date',
     ];
 
-    protected $casts = [
-        'expiry_date' => 'date:d-m-Y',
-    ];
+    // protected $casts = [
+    //     'expiry_date' => 'date:dd/mm/yyyy',
+    // ];
 
     /** @return BelongsTo<Brand,self> */
     public function brand(): BelongsTo
