@@ -358,7 +358,7 @@ class ProductResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make()
-                // ->modalWidth(MaxWidth::SevenExtraLarge)->modal()
+                ->modalWidth(MaxWidth::SevenExtraLarge)->modal()
                 ,
 
             ])
