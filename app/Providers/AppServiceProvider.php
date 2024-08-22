@@ -22,7 +22,14 @@ class AppServiceProvider extends ServiceProvider
     {
         LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
             $switch
-                ->locales(['vi', 'en']); // also accepts a closure
+                ->locales(['vi', 'en'])
+                ->displayLocale('vi')
+                ->labels([
+                    'vi' => 'Tiếng Việt',
+                    'en' => 'English',
+                ])
+                // ->visible(outsidePanels: true)
+            ; // also accepts a closure
         });
     }
 }

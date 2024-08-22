@@ -29,6 +29,7 @@ use Illuminate\Support\Str;
 use Pages\ViewProduct;
 use Schmeits\FilamentCharacterCounter\Forms\Components\TextInput;
 use Schmeits\FilamentCharacterCounter\Forms\Components\Textarea;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class ProductResource extends Resource
 {
@@ -215,6 +216,7 @@ class ProductResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->striped()
             ->columns([
                 Tables\Columns\ImageColumn::make('image')
                     ->label(__('shop/product.image'))
@@ -223,7 +225,6 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('common_title')
                     ->label(__('shop/product.title_popular'))
                     // ->description(fn(Product $record): string => $record->dosage . ' - ' . $record->qty_per_product)
-                    ->copyable()
                     ->searchable(isIndividual: true)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('product_title')
@@ -353,11 +354,13 @@ class ProductResource extends Resource
             )
             ->filtersFormColumns(4)
             ->actions([
-                Tables\Actions\ViewAction::make()->modalWidth(MaxWidth::SevenExtraLarge)->modal(),
+                // Tables\Actions\ViewAction::make()->modalWidth(MaxWidth::SevenExtraLarge)->modal(),
                 Tables\Actions\EditAction::make(),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    ExportBulkAction::make(),
                     Tables\Actions\DeleteBulkAction::make(),
                     Tables\Actions\ForceDeleteBulkAction::make(),
                     Tables\Actions\RestoreBulkAction::make(),

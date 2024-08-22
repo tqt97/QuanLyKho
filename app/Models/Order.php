@@ -16,15 +16,20 @@ class Order extends Model
 
     protected $fillable = [
         'user_id',
-        'customer_id',
         'uuid',
-        'customer_status',
-        'notes',
+        // 'customer_name',
+        // 'customer_phone',
+        'customer_id',
+        'bonus_id',
+        'status',
         'total_price',
+        'notes',
+        'is_buy'
     ];
 
     protected $casts = [
         'status' => OrderStatus::class,
+        'is_buy' => 'boolean',
     ];
 
     /** @return BelongsTo<Customer,self> */
@@ -47,6 +52,11 @@ class Order extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class)->withPivot('quantity');
+    }
+
+    public function bonus()
+    {
+        return $this->belongsTo(Bonus::class);
     }
 
     public function scopeActive($query)

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Bonus;
 use App\Models\Category;
 use App\Models\Customer;
 use App\Models\Order;
@@ -24,6 +25,7 @@ class DatabaseSeeder extends Seeder
         // Customer::factory(10)->create();
 
         Customer::factory(10)->create();
+        Bonus::factory(10)->create();
 
         User::factory()->create([
             'name' => 'TuanTQ',

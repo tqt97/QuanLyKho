@@ -45,6 +45,11 @@ class Product extends Model
         return $this->belongsToMany(Category::class)->withTimestamps();
     }
 
+    // public function orders()
+    // {
+    //     return $this->belongsToMany(Order::class)->withPivot('quantity');
+    // }
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);

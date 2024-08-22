@@ -19,10 +19,12 @@ return new class extends Migration
             $table->foreignId('customer_id')->nullable()->constrained('customers')->nullOnDelete();
 
             // customer phone number is required because the customer can be a guest
-            // $table->string('customer_phone')->nullable();
+            // $table->json('customer_phone')->nullable()->unique()->index();
+            // $table->string('customer_name')->nullable();
 
             // user_id is nullable because the order can be created by a guest
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('bonus_id')->nullable()->constrained('bonuses')->nullOnDelete();
 
             // Prices
             $table->double('total_price')->default(0)->nullable();
@@ -33,9 +35,13 @@ return new class extends Migration
             // Status of customer when creating the order (new or old)
             // $table->enum('customer_status', ['new', 'old'])->default('new');
 
-
+            // Status of order
+            $table->enum('status', ['created', 'success', 'fail', 'not_answered', 'next_time'])->default('created');
             // Notes
             $table->text('notes')->nullable();
+
+            // check customer buy or not
+            $table->boolean('is_buy')->default(false);
 
             $table->softDeletes();
             $table->timestamps();
