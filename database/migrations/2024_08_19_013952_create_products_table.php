@@ -35,6 +35,10 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
         });
+
+        // DB::statement(
+        //     'ALTER TABLE products ADD FULLTEXT fulltext_index(common_title, product_title)'
+        // );
     }
 
     /**

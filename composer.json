@@ -12,6 +12,7 @@
         "filament/filament": "^3.2",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
+        "livewire/livewire": "^3.5",
         "maatwebsite/excel": "^3.1",
         "psr/simple-cache": "^2.0",
         "pxlrbt/filament-excel": "^2.3",

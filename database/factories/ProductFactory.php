@@ -19,15 +19,16 @@ class ProductFactory extends Factory
         $title_product = $this->faker->name;
         return [
             'common_title' => $title_product,
-            'product_title' => $title_product,
+            'product_title' => $this->faker->name,
             // 'sell_title' => $title_product,
             'slug' => \Illuminate\Support\Str::slug($title_product),
             'description' => $this->faker->sentence,
-            'dosage' => $this->faker->randomNumber(),
-            'expiry_date' => $this->faker->dateTime,
-            'qty_per_product' => $this->faker->randomNumber(),
-            'original_price' => $this->faker->randomNumber(),
-            'sell_price' => $this->faker->randomNumber(),
+            'dosage' => $this->faker->randomNumber(1, true),
+            'expiry_date' => '06-2028',
+            'qty_per_product' => $this->faker->randomNumber(3, false),
+            'original_price' => $this->faker->randomNumber(6, true),
+            'sell_price' => $this->faker->randomNumber(6, true),
+            'image' => 'https://images.unsplash.com/photo-1651950519238-15835722f8bb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8Mjh8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60'
         ];
     }
 }

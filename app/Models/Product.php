@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Models\Brand;
 use App\Models\Category;
+use App\Traits\Search;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,6 +16,12 @@ class Product extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    // use Search;
+
+    protected $searchable = [
+        'common_title',
+        'product_title',
+    ];
 
     protected $fillable = [
         'common_title',
@@ -27,7 +35,10 @@ class Product extends Model
         'image',
         'expiry_date',
     ];
-
+    public function scopeSearch(Builder $query, string $search = ''): void
+    {
+        $query->where('product_title', 'like', '%' . $search . '%');
+    }
     // protected $casts = [
     //     'expiry_date' => 'date:dd/mm/yyyy',
     // ];
