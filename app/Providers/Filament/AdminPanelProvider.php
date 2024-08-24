@@ -19,6 +19,8 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use TomatoPHP\FilamentArtisan\FilamentArtisanPlugin;
+use TomatoPHP\FilamentBrowser\FilamentBrowserPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -79,6 +81,53 @@ class AdminPanelProvider extends PanelProvider
                 NavigationGroup::make()
                     ->label(fn(): string => __('shop/navigation.accounts'))
                     ->icon('heroicon-o-user-circle'),
-            ]);;
+            ])
+            ->plugins([
+                FilamentBrowserPlugin::make()
+                    ->hiddenFolders([
+                        base_path('app'),
+                        base_path('bootstrap'),
+                        base_path('config'),
+                        base_path('database'),
+                        base_path('node_modules'),
+                        base_path('routes'),
+                        base_path('resources'),
+                        base_path('lang'),
+                        base_path('tests'),
+                        base_path('vendor'),
+                    ])
+                    ->hiddenFiles([
+                        base_path('.env'),
+                        base_path('.env.example'),
+                        base_path('.gitignore'),
+                        base_path('composer.json'),
+                        base_path('composer.lock'),
+                        base_path('package.json'),
+                        base_path('webpack.mix.js'),
+                        base_path('yarn.lock'),
+                        base_path('phpunit.xml'),
+                        base_path('README.md'),
+                        base_path('LICENSE'),
+                        base_path('artisan'),
+                        base_path('server.php'),
+                        base_path('.gitattributes'),
+                        base_path('package-lock.json'),
+                        base_path('*'),
+
+                    ])
+                    ->hiddenExtantions([
+                        "php",
+                    ])
+                    ->allowCreateFolder()
+                    ->allowEditFile()
+                    ->allowCreateNewFile()
+                    ->allowCreateFolder()
+                    ->allowRenameFile()
+                    ->allowDeleteFile()
+                    ->allowMarkdown()
+                    ->allowCode()
+                    ->allowPreview()
+                    ->basePath(base_path() . '/public/storage/products'),
+            ]);
     }
 }

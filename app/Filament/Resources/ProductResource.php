@@ -174,7 +174,14 @@ class ProductResource extends Resource
                                     ->directory('products')
                                     ->preserveFilenames()
                                     ->imageEditor()
-                                    ->fetchFileInformation(false)
+                                    // ->fetchFileInformation(false)
+                                    ->optimize('webp')
+                                    ->imageResizeMode('cover')
+                                    ->imageCropAspectRatio('4:5')
+                                    ->imageResizeTargetWidth('400')
+                                    ->imageResizeTargetHeight('500')
+                                    // ->panelLayout('grid')
+                                    // ->resize(50)
                                     ->image(),
                                 // Forms\Components\Toggle::make('is_visible')
                                 //     ->label(__('shop/product.is_visible'))
@@ -358,8 +365,7 @@ class ProductResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make()
-                ->modalWidth(MaxWidth::SevenExtraLarge)->modal()
-                ,
+                    ->modalWidth(MaxWidth::SevenExtraLarge)->modal(),
 
             ])
             ->bulkActions([

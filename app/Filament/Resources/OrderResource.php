@@ -283,8 +283,9 @@ class OrderResource extends Resource
                     ->numeric()
                     ->sortable()
                     ->summarize(Tables\Columns\Summarizers\Sum::make()),
-                Tables\Columns\TextColumn::make('status')
+                Tables\Columns\SelectColumn::make('status')
                     ->label(__('shop/order.status'))
+                    ->options(OrderStatus::class)
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\IconColumn::make('is_buy')
