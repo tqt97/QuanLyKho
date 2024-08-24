@@ -2,33 +2,35 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ProductResource\Pages;
-use App\Filament\Resources\ProductResource\RelationManagers;
-use App\Models\Product;
 use Filament\Forms;
+use Filament\Tables;
+use Pages\ViewProduct;
+use App\Models\Product;
 use Filament\Forms\Form;
-use Filament\Infolists\Components\Fieldset;
-use Filament\Infolists\Components\Section;
-use Filament\Infolists\Components\Tabs;
-use Filament\Infolists\Components\TextEntry;
+use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use App\Imports\ProductImport;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\MaxWidth;
-use Filament\Tables;
-use Filament\Tables\Filters\QueryBuilder;
-use Filament\Tables\Filters\QueryBuilder\Constraints\BooleanConstraint;
-use Filament\Tables\Filters\QueryBuilder\Constraints\DateConstraint;
-use Filament\Tables\Filters\QueryBuilder\Constraints\NumberConstraint;
-use Filament\Tables\Filters\QueryBuilder\Constraints\TextConstraint;
-
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
+use Filament\Infolists\Components\Tabs;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Tables\Filters\QueryBuilder;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\Fieldset;
+use Filament\Infolists\Components\TextEntry;
+
+use App\Filament\Resources\ProductResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Str;
-use Pages\ViewProduct;
-use Schmeits\FilamentCharacterCounter\Forms\Components\TextInput;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use App\Filament\Resources\ProductResource\RelationManagers;
 use Schmeits\FilamentCharacterCounter\Forms\Components\Textarea;
+use Schmeits\FilamentCharacterCounter\Forms\Components\TextInput;
+use Filament\Tables\Filters\QueryBuilder\Constraints\DateConstraint;
+use Filament\Tables\Filters\QueryBuilder\Constraints\TextConstraint;
+use Filament\Tables\Filters\QueryBuilder\Constraints\NumberConstraint;
+use Filament\Tables\Filters\QueryBuilder\Constraints\BooleanConstraint;
 
 class ProductResource extends Resource
 {
@@ -48,7 +50,7 @@ class ProductResource extends Resource
     {
         return static::getModel()::count();
     }
-    protected static ?string $recordTitleAttribute = 'title_popular';
+    protected static ?string $recordTitleAttribute = 'common_title';
 
     public static function getNavigationLabel(): string
     {
@@ -172,7 +174,14 @@ class ProductResource extends Resource
                                     ->directory('products')
                                     ->preserveFilenames()
                                     ->imageEditor()
-                                    ->fetchFileInformation(false)
+                                    // ->fetchFileInformation(false)
+                                    ->optimize('webp')
+                                    ->imageResizeMode('cover')
+                                    ->imageCropAspectRatio('9:10')
+                                    ->imageResizeTargetWidth('540')
+                                    ->imageResizeTargetHeight('600')
+                                    // ->panelLayout('grid')
+                                    // ->resize(50)
                                     ->image(),
                                 // Forms\Components\Toggle::make('is_visible')
                                 //     ->label(__('shop/product.is_visible'))
@@ -199,12 +208,13 @@ class ProductResource extends Resource
                                     ->characterLimit(255)
                                     ->required()
                                     ->columnSpan(1),
-                                Forms\Components\DatePicker::make('expiry_date')
+                                TextInput::make('expiry_date')
                                     ->label(__('shop/product.expiry_date'))
+                                    ->suffixIcon('heroicon-m-calendar')
                                     // ->format('d/m/Y')
                                     // ->displayFormat('d/m/Y')
-                                    ->required()
-                                    ->locale('vi')
+                                    // ->required()
+                                    // ->locale('vi')
                                     ->columnSpan(1),
                             ]),
                     ])
@@ -215,6 +225,7 @@ class ProductResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->striped()
             ->columns([
                 Tables\Columns\ImageColumn::make('image')
                     ->label(__('shop/product.image'))
@@ -223,7 +234,6 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('common_title')
                     ->label(__('shop/product.title_popular'))
                     // ->description(fn(Product $record): string => $record->dosage . ' - ' . $record->qty_per_product)
-                    ->copyable()
                     ->searchable(isIndividual: true)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('product_title')
@@ -237,7 +247,7 @@ class ProductResource extends Resource
                 //     ->sortable(),
                 Tables\Columns\TextColumn::make('expiry_date')
                     ->label(__('shop/product.expiry_date'))
-                    ->date('m/Y')
+                    // ->date('m/Y')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('qty_per_product')
                     ->label(__('shop/product.quantity_per_pack'))
@@ -353,11 +363,14 @@ class ProductResource extends Resource
             )
             ->filtersFormColumns(4)
             ->actions([
-                Tables\Actions\ViewAction::make()->modalWidth(MaxWidth::SevenExtraLarge)->modal(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->modalWidth(MaxWidth::SevenExtraLarge)->modal(),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    ExportBulkAction::make(),
                     Tables\Actions\DeleteBulkAction::make(),
                     Tables\Actions\ForceDeleteBulkAction::make(),
                     Tables\Actions\RestoreBulkAction::make(),

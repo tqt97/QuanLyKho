@@ -4,7 +4,7 @@ return [
     'product' => 'Sản phẩm',
     'product_count_numbers' => 'Số lượng sản phẩm',
     'main_info_product' => 'Thông tin sản phẩm',
-    'title_product' => 'Tên sản phẩm | Tên in trên hộp',
+    'title_product' => 'Tên in trên đơn ',
     'slug' => 'Slug',
     'title_popular' => 'Tên thường gọi',
     'price' => 'Giá',
@@ -39,4 +39,6 @@ return [
     'price_to' => 'Giá đến',
     'slug_helper' => 'Slug của sản phẩm',
     'quantity_per_pack_helper' => 'Số lượng trong mỗi sản phẩm',
+    'import_product' => 'Thêm',
+    'import_success' => 'Thêm sản phẩm thành công',
 ];

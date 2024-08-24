@@ -8,49 +8,42 @@ use Filament\Support\Contracts\HasLabel;
 
 enum OrderStatus: string implements HasColor, HasIcon, HasLabel
 {
-    case New = 'new';
-    case Old = 'old';
-
-    // case Processing = 'processing';
-
-    // case Shipped = 'shipped';
-
-    // case Delivered = 'delivered';
-
-    // case Cancelled = 'cancelled';
+    case CREATED = 'created';
+    case SUCCESS = 'success';
+    case FAIL = 'fail';
+    case NOT_ANSWERED = 'not_answered';
+    case NEXT_TIME = 'next_time';
 
     public function getLabel(): string
     {
         return match ($this) {
-            self::New => __('shop/order.customer_order_status.new'),
-            self::Old => __('shop/order.customer_order_status.old'),
-            // self::Processing => 'Processing',
-            // self::Shipped => 'Shipped',
-            // self::Delivered => 'Delivered',
-            // self::Cancelled => 'Cancelled',
+            self::CREATED => __('shop/order.customer_order_status.created'),
+            self::SUCCESS => __('shop/order.customer_order_status.success'),
+            self::FAIL => __('shop/order.customer_order_status.fail'),
+            self::NOT_ANSWERED => __('shop/order.customer_order_status.not_answered'),
+            self::NEXT_TIME => __('shop/order.customer_order_status.next_time'),
         };
     }
 
     public function getColor(): string | array | null
     {
         return match ($this) {
-            self::New => 'success',
-            self::Old => 'warning',
-            // self::Processing => 'warning',
-            // self::Shipped, self::Delivered => 'success',
-            // self::Cancelled => 'danger',
+            self::CREATED => 'success',
+            self::SUCCESS => 'success',
+            self::FAIL => 'danger',
+            self::NOT_ANSWERED => 'warning',
+            self::NEXT_TIME => 'info',
         };
     }
 
     public function getIcon(): ?string
     {
         return match ($this) {
-            self::New => 'heroicon-m-sparkles',
-            self::Old => 'heroicon-m-users',
-            // self::Processing => 'heroicon-m-arrow-path',
-            // self::Shipped => 'heroicon-m-truck',
-            // self::Delivered => 'heroicon-m-check-badge',
-            // self::Cancelled => 'heroicon-m-x-circle',
+            self::CREATED => 'heroicon-m-arrow-path',
+            self::SUCCESS => 'heroicon-m-arrow-path',
+            self::FAIL => 'heroicon-m-check-badge',
+            self::NOT_ANSWERED => 'heroicon-m-x-circle',
+            self::NEXT_TIME => 'heroicon-m-sparkles',
         };
     }
 }

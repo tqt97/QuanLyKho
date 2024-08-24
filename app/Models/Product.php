@@ -4,21 +4,29 @@ namespace App\Models;
 
 use App\Models\Brand;
 use App\Models\Category;
+use App\Traits\Search;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Number;
 
 class Product extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    // use Search;
+
+    protected $searchable = [
+        'common_title',
+        'product_title',
+    ];
 
     protected $fillable = [
         'common_title',
         'product_title',
-        // 'sell_title',
         'slug',
         'dosage',
         'qty_per_product',
@@ -28,10 +36,13 @@ class Product extends Model
         'image',
         'expiry_date',
     ];
-
-    protected $casts = [
-        'expiry_date' => 'date:d-m-Y',
-    ];
+    public function scopeSearch(Builder $query, string $search = ''): void
+    {
+        $query->where('product_title', 'like', '%' . $search . '%');
+    }
+    // protected $casts = [
+    //     'expiry_date' => 'date:dd/mm/yyyy',
+    // ];
 
     /** @return BelongsTo<Brand,self> */
     public function brand(): BelongsTo
@@ -44,6 +55,30 @@ class Product extends Model
     {
         return $this->belongsToMany(Category::class)->withTimestamps();
     }
+
+
+    public function getUrlImage()
+    {
+        if(strpos($this->image, 'http') === 0 || strpos($this->image, 'https') === 0) {
+            return $this->image;
+        }else {
+            return asset('storage/' . $this->image);
+        }
+    }
+
+    public function formatPrice()
+    {
+        return Number::format($this->sell_price , locale:'vi');
+    }
+
+    public function getExpiryDateAttribute($value)
+    {
+        return date('d/m/Y', strtotime($value));
+    }
+    // public function orders()
+    // {
+    //     return $this->belongsToMany(Order::class)->withPivot('quantity');
+    // }
 
     public function scopeActive($query)
     {
