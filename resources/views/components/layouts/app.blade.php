@@ -5,7 +5,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Laravel</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ isset($title) ? $title . ' | ' : '' }}{{ config('app.name', 'Laravel') }}</title>
+
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -45,7 +47,7 @@
 
             <div class="order-1 md:order-2">
                 <a class="flex items-center tracking-wide no-underline hover:no-underline font-bold text-orange-600 text-xl "
-                    href="#">
+                    href="/">
                     {{-- <svg class="fill-current text-orange-600" xmlns="http://www.w3.org/2000/svg" width="24"
                         height="24" viewBox="0 0 24 24">
                         <path

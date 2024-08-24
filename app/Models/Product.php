@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Number;
 
 class Product extends Model
 {
@@ -55,6 +56,25 @@ class Product extends Model
         return $this->belongsToMany(Category::class)->withTimestamps();
     }
 
+
+    public function getUrlImage()
+    {
+        if(strpos($this->image, 'http') === 0 || strpos($this->image, 'https') === 0) {
+            return $this->image;
+        }else {
+            return asset('storage/' . $this->image);
+        }
+    }
+
+    public function formatPrice()
+    {
+        return Number::format($this->sell_price , locale:'vi');
+    }
+
+    public function getExpiryDateAttribute($value)
+    {
+        return date('d/m/Y', strtotime($value));
+    }
     // public function orders()
     // {
     //     return $this->belongsToMany(Order::class)->withPivot('quantity');
