@@ -12,6 +12,7 @@
         "calebporzio/sushi": "^2.5",
         "filament/filament": "^3.2",
         "joshembling/image-optimizer": "^1.4",
+        "lara-zeus/quantity": "^1.0",
         "laravel/framework": "^11.9",
         "laravel/pulse": "^1.2",
         "laravel/tinker": "^2.9",

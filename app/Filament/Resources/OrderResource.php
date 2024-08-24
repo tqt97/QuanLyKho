@@ -4,13 +4,10 @@ namespace App\Filament\Resources;
 
 use App\Enums\OrderStatus;
 use App\Filament\Resources\OrderResource\Pages;
-use App\Filament\Resources\OrderResource\RelationManagers;
+use App\Models\Bonus;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
-use AymanAlhattami\FilamentContextMenu\Actions\GoBackAction;
-use AymanAlhattami\FilamentContextMenu\Actions\GoForwardAction;
-use AymanAlhattami\FilamentContextMenu\Actions\RefreshAction;
 use Filament\Forms;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Repeater;
@@ -20,11 +17,10 @@ use Filament\Support\Enums\MaxWidth;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Log;
-use Schmeits\FilamentCharacterCounter\Forms\Components\TextInput;
-use Schmeits\FilamentCharacterCounter\Forms\Components\Textarea;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
+use Schmeits\FilamentCharacterCounter\Forms\Components\Textarea;
+use Schmeits\FilamentCharacterCounter\Forms\Components\TextInput;
 
 class OrderResource extends Resource
 {
@@ -32,16 +28,15 @@ class OrderResource extends Resource
 
     protected static ?string $model = Order::class;
 
-
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
 
     protected static ?int $navigationSort = 4;
-
 
     public static function getNavigationBadgeTooltip(): ?string
     {
         return __('shop/order.number_of_orders');
     }
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
@@ -56,6 +51,7 @@ class OrderResource extends Resource
     {
         return __('shop/order.order');
     }
+
     protected static ?string $recordTitleAttribute = 'uuid';
 
     public static function form(Form $form): Form
@@ -73,23 +69,16 @@ class OrderResource extends Resource
                                 // ->modalDescription(__('shop/order.modal_description_reset'))
                                 // ->disabled(fn(Order $order) => $order->exists)
                                 ->hidden(function (Forms\Get $get, Forms\Set $set, Order $order) {
-                                    // $phone = Order::whereJsonContains('customer_phone', $get('customer_phone'))->first();
-                                    $is_buy = $get('is_buy');
+
                                     $customer_name = $get('customer_name');
                                     $customer_phone = $get('customer_phone');
-                                    // Log::info('phone: ' . $phone ? 'Exist' : 'null');
-                                    // Log::info('is_buy: ' . $is_buy . ' ,customer_name: ' . $customer_name );
-                                    $is_name    = $customer_name === null || empty($customer_name);
-                                    $is_phone   = $customer_phone === null || empty($customer_phone);
-                                    // Log::info('is_name: ' . $is_name . ' ,is_phone: ' . $is_phone . ' ,is_buy: ' . $is_buy);
-                                    $condition =  $order->exists || $is_buy === true || $is_name  || $is_phone;
+                                    $is_name = $customer_name === null || empty($customer_name);
+                                    $is_phone = $customer_phone === null || empty($customer_phone);
+                                    $condition = $order->exists || $is_name || $is_phone;
 
-                                    // Log::info('condition: ' . $condition);
                                     return $condition;
                                 })
-                                // ->requiresConfirmation()
                                 ->color('success')
-                                // ->modalHidden(fn(): bool => $this->role !== 'admin')
                                 ->requiresConfirmation(false)
                                 ->action(function (Forms\Set $set, Forms\Get $get) {
                                     $id = Customer::create([
@@ -98,11 +87,6 @@ class OrderResource extends Resource
                                     ])->id;
                                     $set('customer_id', $id);
                                 })
-                                // ->mutateFormDataUsing(function (array $data): array {
-                                //     $data['last_edited_by_id'] = auth()->id();
-
-                                //     return $data;
-                                // })
                                 ->modalSubmitActionLabel(__('shop/order.create_customer')),
                         ])
                         ->schema([
@@ -114,20 +98,24 @@ class OrderResource extends Resource
                                 ->preload()
                                 ->live(debounce: 500)
                                 ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set, $state) {
-                                    // dd($state);
-                                    // dd(...(Order::query()->pluck('customer_phone', 'id')));
-                                    // check phone number is exist in customer_phone of order table
-                                    // $order = Order::whereJsonContains('customer_phone', $state)->first();
                                     $customer = Customer::where('id', $state)->first();
-                                    // dd($order);
+
                                     if ($customer === null || empty($state)) {
                                         $set('customer_name', null);
-                                        $set('is_buy', false);
                                     } else {
                                         $set('customer_name', $customer->name);
-                                        $set('is_buy', true);
                                     }
                                 })
+                                ->suffixAction(
+                                    Forms\Components\Actions\Action::make('copy')
+                                        ->icon('heroicon-s-clipboard-document-check')
+                                        ->action(function ($livewire, $state) {
+                                            $livewire->js(
+                                                'window.navigator.clipboard.writeText("' . $state . '");
+                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+                                            );
+                                        })
+                                )
                                 // ->disabled(fn(Order $order) => $order->exists)
                                 ->required(
                                     function (Forms\Get $get) {
@@ -148,6 +136,16 @@ class OrderResource extends Resource
                                         return $get('customer_id') !== null;
                                     }
                                 )
+                                ->suffixAction(
+                                    Forms\Components\Actions\Action::make('copy')
+                                        ->icon('heroicon-s-clipboard-document-check')
+                                        ->action(function ($livewire, $state) {
+                                            $livewire->js(
+                                                'window.navigator.clipboard.writeText("' . $state . '");
+                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+                                            );
+                                        })
+                                )
                                 ->maxLength(255),
                             Forms\Components\TextInput::make('customer_name')
                                 ->label(__('shop/order.customer_name'))
@@ -160,24 +158,17 @@ class OrderResource extends Resource
                                 //         return $customer !== null && $get('customer_id') !== null;
                                 //     }
                                 // )
-                                ->maxLength(255),
-                            Forms\Components\Toggle::make('is_buy')
-                                ->label(__('shop/order.is_buy'))
-                                ->default(false)
-                                // ->onIcon('heroicon-m-bolt')
-                                ->onIcon('heroicon-m-user')
-                                ->onColor('success')
-                                // ->offColor('')
-                                ->inline(false)
-                                ->hidden(
-                                    function (Forms\Get $get) {
-                                        return $get('customer_id') !== null;
-                                    }
+                                ->suffixAction(
+                                    Forms\Components\Actions\Action::make('copy')
+                                        ->icon('heroicon-s-clipboard-document-check')
+                                        ->action(function ($livewire, $state) {
+                                            $livewire->js(
+                                                'window.navigator.clipboard.writeText("' . $state . '");
+                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+                                            );
+                                        })
                                 )
-                            // ->live()
-
-                            // ->reactive()
-                            ,
+                                ->maxLength(255),
                             Forms\Components\Select::make('bonus_id')
                                 ->label(__('shop/order.bonus'))
                                 ->relationship('bonus', 'name')
@@ -189,7 +180,7 @@ class OrderResource extends Resource
                                 ->options(
                                     OrderStatus::class
                                 )
-                                ->hidden(fn(Order $order) => !$order->exists)
+                                ->hidden(fn(Order $order) => ! $order->exists)
                                 ->searchable()
                                 ->searchDebounce(300),
                         ])
@@ -203,6 +194,7 @@ class OrderResource extends Resource
                                 ->modalHeading(__('shop/order.are_you_sure'))
                                 ->modalDescription(__('shop/order.modal_description_reset'))
                                 ->requiresConfirmation()
+                                ->icon('heroicon-o-arrow-path')
                                 ->color('danger')
                                 ->action(fn(Forms\Set $set) => $set(
                                     'items',
@@ -225,11 +217,9 @@ class OrderResource extends Resource
                                 Forms\Components\TextInput::make('total_price')
                                     ->reactive()
                                     ->label(__('shop/order.order_total'))
-                                    // ->disabled()
                                     ->readOnly()
                                     ->numeric()
-                                    ->suffix('vnd')
-                                    // ->currencyMask(thousandSeparator: '.', decimalSeparator: ',', precision: 2)
+                                    ->suffix('₫')
                                     ->default(0),
                             ])
                             ->columns(1),
@@ -246,9 +236,19 @@ class OrderResource extends Resource
                             ->hidden(fn(?Order $record) => $record === null)
                             ->columns(1),
                         Forms\Components\Group::make()->schema([
-                            TextArea::make('notes')->label(__('shop/order.note'))
+                            TextInput::make('notes')->label(__('shop/order.note'))
+                                ->suffixAction(
+                                    Forms\Components\Actions\Action::make('copy')
+                                        ->icon('heroicon-s-clipboard-document-check')
+                                        ->action(function ($livewire, $state) {
+                                            $livewire->js(
+                                                'window.navigator.clipboard.writeText("' . $state . '");
+                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+                                            );
+                                        })
+                                )
                                 ->columnSpan('full'),
-                        ])
+                        ]),
                     ])
                     ->columnSpan(1),
                 // ])->columnSpan('1'),
@@ -264,44 +264,62 @@ class OrderResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('uuid')
                     ->label('UUID')
-                    ->searchable(),
+                    ->sortable()
+                    ->copyable()
+                    ->searchable(isIndividual: true),
                 Tables\Columns\TextColumn::make('customer.name')
                     ->label(__('shop/order.customer_name'))
                     ->searchable(isIndividual: true)
+                    ->copyable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('customer.phone')
                     ->label(__('shop/order.customer_phone'))
                     ->searchable(isIndividual: true)
                     ->copyable()
                     ->sortable(),
-
-                // Tables\Columns\TextColumn::make('customer_name')
-                //     ->searchable(),
                 Tables\Columns\TextColumn::make('total_price')
                     ->label(__('shop/order.total_price'))
                     ->currency('VND')
-                    ->numeric()
-                    ->sortable()
-                    ->summarize(Tables\Columns\Summarizers\Sum::make()),
+                    ->numeric(locale: 'vi_VN')
+                    ->money(
+                        currency: 'VND',
+                        locale: 'vi_VN'
+                    )
+                    ->sortable()->color('success')
+                    ->summarize(
+                        Tables\Columns\Summarizers\Sum::make()
+                            ->label(__('shop/order.order_total'))
+                            ->currency('VND')
+                            ->numeric(locale: 'vi_VN')
+                            ->money(
+                                currency: 'VND',
+                                locale: 'vi_VN'
+                            )
+                    ),
                 Tables\Columns\SelectColumn::make('status')
                     ->label(__('shop/order.status'))
                     ->options(OrderStatus::class)
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\IconColumn::make('is_buy')
-                    ->label(__('shop/order.is_buy'))
-                    // ->icon(fn($record) => $record->is_buy ? 'heroicon-o-check' : 'heroicon-o-x')
-                    ->boolean(),
+                Tables\Columns\SelectColumn::make('bonus_id')
+                    ->label(__('shop/order.bonus'))
+                    ->options(
+                        function (Builder $query) {
+                            return Bonus::pluck('name', 'id');
+                        }
+                    )
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('deleted_at')
-                    ->dateTime()
+                    ->dateTime('d-m-Y H:i:s')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                    ->dateTime('d-m-Y H:i:s')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->dateTime('d-m-Y H:i:s')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
@@ -319,8 +337,7 @@ class OrderResource extends Resource
             ])
             ->emptyStateHeading(__('shop/order.no_orders_yet'))
             ->emptyStateDescription(__('shop/order.no_orders_yet_description'))
-            ->emptyStateIcon('heroicon-o-shopping-bag')
-        ;
+            ->emptyStateIcon('heroicon-o-shopping-bag');
     }
 
     public static function getPages(): array
@@ -333,86 +350,11 @@ class OrderResource extends Resource
     public static function getDetailsFormSchema(): array
     {
         return [
-            // Forms\Components\Select::make('customer_id')
-            //     ->label(__('shop/order.customer_phone'))
-            //     ->relationship('customer', 'phone')
-            //     ->preload()
-            //     ->searchable()
-            //     ->required()
-            //     ->live()
-            //     ->createOptionForm([
-            //         TextInput::make('name')
-            //             ->label(__('shop/order.customer_name'))
-            //             ->required()
-            //             ->characterLimit(255)
-            //             ->suffixAction(
-            //                 Forms\Components\Actions\Action::make('copy')
-            //                     ->icon('heroicon-s-clipboard-document-check')
-            //                     ->action(function ($livewire, $state) {
-            //                         $livewire->js(
-            //                             'window.navigator.clipboard.writeText("' . $state . '");
-            //         $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
-            //                         );
-            //                     })
-            //             ),
-            //         TextInput::make('phone')
-            //             ->label(__('shop/order.phone'))
-            //             ->required()
-            //             ->characterLimit(15)
-            //             ->suffixAction(
-            //                 Forms\Components\Actions\Action::make('copy')
-            //                     ->icon('heroicon-s-clipboard-document-check')
-            //                     ->action(function ($livewire, $state) {
-            //                         $livewire->js(
-            //                             'window.navigator.clipboard.writeText("' . $state . '");
-            //         $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
-            //                         );
-            //                     })
-            //             ),
-
-            //         Forms\Components\Select::make('gender')
-            //             ->label(__('shop/order.gender'))
-            //             ->placeholder(__('shop/order.select_gender'))
-            //             ->options([
-            //                 'male' => __('shop/order.male'),
-            //                 'female' => __('shop/order.female'),
-            //             ])
-            //             ->required()
-            //             ->native(false),
-            //     ])
-            //     ->createOptionAction(function (Action $action) {
-            //         return $action
-            //             ->modalHeading(__('shop/order.create_customer'))
-            //             ->modalSubmitActionLabel(__('shop/order.create_customer'))
-            //             ->modalWidth('lg');
-            //     })
-            //     ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set, $state) {
-
-            //         $set('dynamic_hint', Customer::find($state)?->name);
-            //     })
-            //     // ->prefixAction(
-            //     //     Forms\Components\Actions\Action::make('create')
-            //     //         ->icon('heroicon-s-plus')
-            //     //         ->label(__('shop/order.create_customer'))
-            //     //         ->url(CustomerResource::getUrl('create'))
-            //     //         ->button()
-            //     // )
-            //     ->suffixAction(
-            //         Forms\Components\Actions\Action::make('copy')
-            //             ->icon('heroicon-s-clipboard-document-check')
-            //             ->action(function ($livewire, $state) {
-            //                 $name = Customer::find($state)?->name;
-            //                 $livewire->js(
-            //                     'window.navigator.clipboard.writeText("' . $name . '");
-            //         $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
-            //                 );
-            //             })
-            //     )
-            //     ->columnSpan('full'),
             Forms\Components\TextInput::make('customer_name')
                 ->label(__('shop/order.customer_name'))
                 ->placeholder(function (Forms\Get $get) {
                     $customer = Customer::find($get('customer_id'));
+
                     return $customer?->name ?? __('shop/order.customer_phone_hint');
                 })
                 ->hidden(function (Forms\Get $get) {
@@ -422,7 +364,6 @@ class OrderResource extends Resource
                 ->label('')
                 // ->extraInputAttributes(['class' => 'text-muted'])
                 ->columnSpan('full'),
-
 
         ];
     }
@@ -439,11 +380,12 @@ class OrderResource extends Resource
                     ->reactive()
                     // ->afterStateUpdated(fn($state, Forms\Set $set) => $set('unit_price', Product::find($state)?->price ?? 0,))
                     ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set, $state) {
-                        Log::info('state: ' . $state);
+                        // Log::info('state: ' . $state);
                         if ($state === null || empty($state)) {
-                            $set('price',  0);
+                            $set('price', 0);
                             $set('total', 0);
                             $set('quantity', 1);
+
                             return;
                         }
                         $set('quantity', 1);
@@ -469,12 +411,11 @@ class OrderResource extends Resource
                                 );
                             })
                     ),
-
-                Forms\Components\TextInput::make('quantity')
+                \LaraZeus\Quantity\Components\Quantity::make('quantity')
                     ->label(__('shop/order.quantity'))
                     ->numeric()
-                    ->minValue(1)
                     ->maxValue(20)
+                    ->minValue(1)
                     ->default(1)
                     ->columnSpan(['md' => 2])
                     ->live(500)
@@ -492,13 +433,14 @@ class OrderResource extends Resource
                     // ->disabled()
                     // ->readOnly()
                     // ->dehydrated()
+                    ->suffix('₫')
                     ->numeric()
                     ->minValue(1)
                     // ->debounce(300)
                     // ->live()
                     // ->currencyMask(thousandSeparator: '.', decimalSeparator: ',', precision: 2)
 
-                    ->live(debounce: 500)
+                    ->live(debounce: 300)
                     ->required()
                     // ->formatStateUsing(fn($state) => $state ?? number_format($state, 3, ',', '.'))
                     ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set) {
@@ -514,7 +456,8 @@ class OrderResource extends Resource
                     ->label(__('shop/order.total_single_product'))
                     // ->disabled()
                     // ->reactive()
-                    ->live(debounce: 500)
+                    ->live(debounce: 300)
+                    ->suffix('₫')
                     ->readOnly()
                     ->numeric()
                     ->required()
@@ -542,7 +485,7 @@ class OrderResource extends Resource
 
                         $price_final = $price_edit ? $price_edit : $price_sell;
 
-                        Log::info('>> price_final: ' . $price_final . ' ,price_sell: ' . $price_sell . ' ,price_edit: ' . $price_edit);
+                        // Log::info('>> price_final: ' . $price_final . ' ,price_sell: ' . $price_sell . ' ,price_edit: ' . $price_edit);
 
                         // $total += ((($product->price + $product->vat) - $getDiscount) * $orderItem['qty']);
                         $total_price += $price_final * $orderItem['quantity'];
@@ -583,7 +526,7 @@ class OrderResource extends Resource
             ])
             ->required()
             // ->reorderableWithButtons()
-            ->collapsible()
+            // ->collapsible()
             ->itemLabel(fn(array $state): ?string => Product::find($state['product_id'])?->common_title ? __('shop/order.title_popular_label') . Product::find($state['product_id'])?->common_title : null);
     }
 }

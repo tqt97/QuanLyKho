@@ -24,12 +24,12 @@ class Order extends Model
         'status',
         'total_price',
         'notes',
-        'is_buy'
+        // 'is_buy'
     ];
 
     protected $casts = [
         'status' => OrderStatus::class,
-        'is_buy' => 'boolean',
+        // 'is_buy' => 'boolean',
     ];
 
     /** @return BelongsTo<Customer,self> */

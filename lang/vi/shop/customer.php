@@ -14,5 +14,5 @@ return [
     'gender_options' => [
         'male' => 'Nam',
         'female' => 'Nữ',
-    ]
+    ],
 ];

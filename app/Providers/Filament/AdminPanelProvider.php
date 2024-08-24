@@ -19,7 +19,6 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use TomatoPHP\FilamentArtisan\FilamentArtisanPlugin;
 use TomatoPHP\FilamentBrowser\FilamentBrowserPlugin;
 
 class AdminPanelProvider extends PanelProvider
@@ -76,10 +75,10 @@ class AdminPanelProvider extends PanelProvider
             ->unsavedChangesAlerts()
             ->navigationGroups([
                 NavigationGroup::make()
-                    ->label(fn(): string => __('shop/navigation.shops'))
+                    ->label(fn (): string => __('shop/navigation.shops'))
                     ->icon('heroicon-o-shopping-cart'),
                 NavigationGroup::make()
-                    ->label(fn(): string => __('shop/navigation.accounts'))
+                    ->label(fn (): string => __('shop/navigation.accounts'))
                     ->icon('heroicon-o-user-circle'),
             ])
             ->plugins([
@@ -116,7 +115,7 @@ class AdminPanelProvider extends PanelProvider
 
                     ])
                     ->hiddenExtantions([
-                        "php",
+                        'php',
                     ])
                     ->allowCreateFolder()
                     ->allowEditFile()
@@ -127,7 +126,7 @@ class AdminPanelProvider extends PanelProvider
                     ->allowMarkdown()
                     ->allowCode()
                     ->allowPreview()
-                    ->basePath(base_path() . '/public/storage/products'),
+                    ->basePath(base_path().'/public/storage/products'),
             ]);
     }
 }

@@ -6,7 +6,7 @@ trait Search
 {
     private function buildWildCards($term)
     {
-        if ($term == "") {
+        if ($term == '') {
             return $term;
         }
 
@@ -18,9 +18,10 @@ trait Search
         foreach ($words as $idx => $word) {
             // Add operators so we can leverage the boolean mode of
             // full text indices.
-            $words[$idx] = "+" . $word . "*";
+            $words[$idx] = '+'.$word.'*';
         }
         $term = implode(' ', $words);
+
         return $term;
     }
 
@@ -34,6 +35,7 @@ trait Search
             "MATCH ({$columns}) AGAINST (? IN BOOLEAN MODE)",
             $this->buildWildCards($term)
         );
+
         return $query;
     }
 }

@@ -40,7 +40,7 @@ return [
         'success' => 'Thành công',
         'fail' => 'Thất bại',
         'not_answered' => 'Không trả lời',
-        'next_time' => 'Lần sau',
+        'next_time' => 'Gọi lại lần sau',
     ],
     'are_you_sure' => 'Bạn có chắc chắn muốn xóa đơn hàng này?',
     'reset_items_description' => 'Bạn có chắc chắn muốn xóa tất cả sản phẩm trong đơn hàng này?',
@@ -53,9 +53,9 @@ return [
     'order_customer_info_description' => 'Thông tin khách hàng',
     'order_total_description' => 'Tổng tiền của đơn hàng',
     'order_items_label' => 'Đơn hàng',
-    'order_items_help_text' =>  'Thêm, xóa, sửa sản phẩm trong đơn hàng',
+    'order_items_help_text' => 'Thêm, xóa, sửa sản phẩm trong giỏ hàng',
     'cart_label' => 'Thanh toán',
-    'tabs'=> [
+    'tabs' => [
         'all' => 'Tất cả',
         'today' => 'Hôm nay',
         'this_week' => 'Tuần này',
@@ -67,7 +67,7 @@ return [
     'created_by' => 'Người tạo',
     'created_at_description' => 'Được tạo vào lúc',
     'cart' => 'Giỏ hàng',
-    'is_buy' => 'Khách hàng cũ',
+    'is_buy' => 'Đã từng mua hàng',
     'bonus' => 'Quà tặng kèm',
     'order_time' => 'Thời gian đặt hàng',
     'add_new_user' => 'Thêm mới',
@@ -75,4 +75,5 @@ return [
     'customer_phone_check' => 'Kiểm tra số điện thoại',
     'is_buy_description' => 'Khách hàng cũ',
     'total_price' => 'Tổng tiền',
+    'create_new_order' => 'Thêm mới',
 ];

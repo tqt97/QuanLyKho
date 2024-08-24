@@ -2,14 +2,14 @@
 
 namespace App\Filament\Resources\ProductResource\Pages;
 
-use Filament\Actions;
-use App\Imports\ProductImport;
-use Filament\Pages\Actions\Action;
-use Maatwebsite\Excel\Facades\Excel;
-use Filament\Notifications\Notification;
-use Filament\Forms\Components\FileUpload;
-use Filament\Resources\Pages\ListRecords;
 use App\Filament\Resources\ProductResource;
+use App\Imports\ProductImport;
+use Filament\Actions;
+use Filament\Forms\Components\FileUpload;
+use Filament\Notifications\Notification;
+use Filament\Pages\Actions\Action;
+use Filament\Resources\Pages\ListRecords;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ListProducts extends ListRecords
 {
@@ -22,14 +22,14 @@ class ListProducts extends ListRecords
             //     ->color("primary"),
             Action::make('Import')
                 ->label(__('shop/product.import_product'))
-                ->color('info')
+                ->color('success')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->form([
-                    FileUpload::make('file')
+                    FileUpload::make('file'),
                 ])
                 ->action(function (array $data) {
                     // dd($data);
-                    $file = public_path('storage/' . $data['file']);
+                    $file = public_path('storage/'.$data['file']);
 
                     Excel::import(new ProductImport, $file);
 
@@ -39,7 +39,8 @@ class ListProducts extends ListRecords
                         ->send();
                 }),
             Actions\CreateAction::make()
-            ->icon('heroicon-o-plus'),
+                ->icon('heroicon-o-plus')
+                ->label(__('shop/product.create_new_product')),
         ];
     }
 }

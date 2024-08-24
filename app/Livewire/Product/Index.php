@@ -74,6 +74,7 @@ class Index extends Component
             ->whereLike(['common_title', 'product_title'], $this->search)
             ->orderBy('created_at', $this->sort)
             ->paginate(6);
+
         // dd($products);
         return view(
             'livewire.product.index',

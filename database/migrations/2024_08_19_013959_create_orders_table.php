@@ -31,7 +31,6 @@ return new class extends Migration
             // $table->double('discount')->default(0)->nullable();
             // $table->double('vat')->default(0)->nullable();
 
-
             // Status of customer when creating the order (new or old)
             // $table->enum('customer_status', ['new', 'old'])->default('new');
 
@@ -41,7 +40,7 @@ return new class extends Migration
             $table->text('notes')->nullable();
 
             // check customer buy or not
-            $table->boolean('is_buy')->default(false);
+            // $table->boolean('is_buy')->default(false);
 
             $table->softDeletes();
             $table->timestamps();
