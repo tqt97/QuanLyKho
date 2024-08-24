@@ -50,7 +50,7 @@ class ProductResource extends Resource
     {
         return static::getModel()::count();
     }
-    protected static ?string $recordTitleAttribute = 'title_popular';
+    protected static ?string $recordTitleAttribute = 'common_title';
 
     public static function getNavigationLabel(): string
     {

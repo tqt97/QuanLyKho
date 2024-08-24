@@ -31,7 +31,7 @@
                 </div>
 
             </div>
-            <div class="flex justify-between items-center py-3 px-2">
+            <div class="flex justify-between items-center py-3 px-2 lg:hidden">
                 <div class="flex text-gray-800 group">
                     @if ($search)
                         <span class="">
