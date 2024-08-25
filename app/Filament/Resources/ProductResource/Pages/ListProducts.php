@@ -4,6 +4,10 @@ namespace App\Filament\Resources\ProductResource\Pages;
 
 use App\Filament\Resources\ProductResource;
 use App\Imports\ProductImport;
+use AymanAlhattami\FilamentContextMenu\Actions\GoBackAction;
+use AymanAlhattami\FilamentContextMenu\Actions\GoForwardAction;
+use AymanAlhattami\FilamentContextMenu\Actions\RefreshAction;
+use AymanAlhattami\FilamentContextMenu\Traits\PageHasContextMenu;
 use Filament\Actions;
 use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
@@ -13,6 +17,8 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ListProducts extends ListRecords
 {
+    use PageHasContextMenu;
+
     protected static string $resource = ProductResource::class;
 
     protected function getHeaderActions(): array
@@ -41,6 +47,15 @@ class ListProducts extends ListRecords
             Actions\CreateAction::make()
                 ->icon('heroicon-o-plus')
                 ->label(__('shop/product.create_new_product')),
+        ];
+    }
+
+    public static function getContextMenuActions(): array
+    {
+        return [
+            RefreshAction::make(),
+            GoBackAction::make(),
+            GoForwardAction::make(),
         ];
     }
 }

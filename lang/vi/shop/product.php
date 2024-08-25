@@ -42,4 +42,7 @@ return [
     'import_product' => 'Nhập',
     'import_success' => 'Thêm sản phẩm thành công',
     'create_new_product' => 'Thêm mới',
+    'customer_name_filter' => 'Tên khách hàng',
+    'customer_phone_filter' => 'Số điện thoại',
+    'price_filter' => 'Giá',
 ];

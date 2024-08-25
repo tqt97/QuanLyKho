@@ -14,6 +14,12 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Tables;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\QueryBuilder;
+use Filament\Tables\Filters\QueryBuilder\Constraints\DateConstraint;
+use Filament\Tables\Filters\QueryBuilder\Constraints\NumberConstraint;
+use Filament\Tables\Filters\QueryBuilder\Constraints\SelectConstraint;
+use Filament\Tables\Filters\QueryBuilder\Constraints\TextConstraint;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
@@ -322,8 +328,18 @@ class OrderResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
-            ])
+                QueryBuilder::make()
+                    ->constraints([
+                        TextConstraint::make('customer.name')->label(__('shop/product.customer_name_filter'))->icon('heroicon-o-users'),
+                        TextConstraint::make('customer.phone')->label(__('shop/product.customer_phone_filter'))->icon('heroicon-o-phone'),
+                        NumberConstraint::make('total_price')->label(__('shop/product.price_filter'))->icon('heroicon-o-currency-dollar'),
+                        SelectConstraint::make('status')
+                            ->icon('heroicon-o-command-line')
+                            ->options(OrderStatus::class)
+                            ->label(__('shop/order.status')),
+                        DateConstraint::make('created_at')->label(__('shop/product.created_from'))->icon('heroicon-o-calendar'),
+                    ]),
+            ], layout: FiltersLayout::AboveContentCollapsible)
             ->actions([
                 Tables\Actions\EditAction::make()->modalWidth(MaxWidth::SevenExtraLarge)->modal(),
                 Tables\Actions\DeleteAction::make(),

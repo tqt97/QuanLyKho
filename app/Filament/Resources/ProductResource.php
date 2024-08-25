@@ -6,10 +6,6 @@ use App\Filament\Resources\ProductResource\Pages;
 use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Infolists\Components\Fieldset;
-use Filament\Infolists\Components\Section;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Tables;
@@ -285,72 +281,6 @@ class ProductResource extends Resource
             ])
             ->filters(
                 [
-                    // Tables\Filters\TrashedFilter::make(),
-                    // Tables\Filters\Filter::make('created_from')
-                    //     ->form([
-                    //         Forms\Components\DatePicker::make('created_from')->label(__('shop/product.created_from')),
-                    //     ])
-                    //     ->query(function (Builder $query, array $data): Builder {
-                    //         return $query
-                    //             ->when(
-                    //                 $data['created_from'],
-                    //                 fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
-                    //             );
-                    //     }),
-                    // Tables\Filters\Filter::make('created_until')
-                    //     ->form([
-                    //         Forms\Components\DatePicker::make('created_until')->label(__('shop/product.created_until')),
-                    //     ])
-                    //     ->query(function (Builder $query, array $data): Builder {
-                    //         return $query
-                    //             ->when(
-                    //                 $data['created_until'],
-                    //                 fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
-                    //             );
-                    //     })->default(now()),
-
-                    // Tables\Filters\Filter::make('price')
-                    //     ->form([
-                    //         Forms\Components\DatePicker::make('price')->label(__('shop/product.price_from')),
-                    //     ])
-                    //     ->query(function (Builder $query, array $data): Builder {
-                    //         return $query
-                    //             ->when(
-                    //                 $data['price'],
-                    //                 fn(Builder $query, $price): Builder => $query->whereDate('price', '>=', $price),
-                    //             );
-                    //     }),
-                    // Tables\Filters\Filter::make('price')->label(__('shop/product._or'))
-                    //     ->form([
-                    //         Forms\Components\TextInput::make('price')->label(__('shop/product.price_until')),
-                    //     ])
-                    //     ->query(function (Builder $query, array $data): Builder {
-                    //         return $query
-                    //             ->when(
-                    //                 $data['price'],
-                    //                 fn(Builder $query, $price): Builder => $query->whereDate('price', '<=', $price),
-                    //             );
-                    //     }),
-                    // Tables\Filters\Filter::make('price')
-                    //     ->form([
-                    //         TextInput::make('price'),
-                    //     ])
-                    //     ->query(function (Builder $query, array $data): Builder {
-                    //         return $query
-                    //             ->when(
-                    //                 $data['price'],
-                    //                 fn(Builder $query, $price): Builder => $query->where('price', $price),
-                    //             )
-                    //             ->when(
-                    //                 $data['price'],
-                    //                 fn(Builder $query, $price): Builder => $query->where('price', '>=', $price),
-                    //             )
-                    //             ->when(
-                    //                 $data['price'],
-                    //                 fn(Builder $query, $price): Builder => $query->where('price', '<=', $price),
-                    //             );
-                    //     }),
-
                     QueryBuilder::make()
                         ->constraints([
                             TextConstraint::make('title_popular')->label(__('shop/product.title_popular'))->icon('heroicon-o-cube'),
@@ -414,32 +344,4 @@ class ProductResource extends Resource
     {
         return ['product_title', 'common_title'];
     }
-
-    // public static function infolist(Infolist $infolist): Infolist
-    // {
-    //     return $infolist->schema([
-    //         Section::make('Post')
-    //             ->schema([
-    //                 Fieldset::make('General')
-    //                     ->schema([
-    //                         TextEntry::make('title_popular'),
-    //                         TextEntry::make('title_product'),
-    //                         // TextEntry::make('description'),
-    //                     ]),
-    //                 Fieldset::make('Publish Information')
-    //                     ->schema([
-    //                         // TextEntry::make('status')
-    //                         // ->badge()->color(function ($state) {
-    //                         //     return $state->getColor();
-    //                     ]),
-    //                 Fieldset::make('Description')
-    //                     ->schema([
-    //                         TextEntry::make('content')
-    //                             ->html()
-    //                             ->columnSpanFull(),
-    //                     ]),
-    //             ]),
-    //     ]);
-    // }
-
 }
