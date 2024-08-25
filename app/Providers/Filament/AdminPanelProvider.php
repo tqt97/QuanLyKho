@@ -10,6 +10,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationGroup;
+use Filament\Navigation\NavigationItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -82,11 +83,17 @@ class AdminPanelProvider extends PanelProvider
             ->unsavedChangesAlerts()
             ->navigationGroups([
                 NavigationGroup::make()
-                    ->label(fn (): string => __('shop/navigation.shops'))
+                    ->label(fn(): string => __('shop/navigation.shops'))
                     ->icon('heroicon-o-shopping-cart'),
                 NavigationGroup::make()
-                    ->label(fn (): string => __('shop/navigation.accounts'))
+                    ->label(fn(): string => __('shop/navigation.accounts'))
                     ->icon('heroicon-o-user-circle'),
+            ])
+            ->navigationItems([
+                NavigationItem::make('Website')
+                    ->url('/', shouldOpenInNewTab: true)
+
+                    ->icon('heroicon-o-globe-alt')->sort(10)
             ])
             ->plugins([
                 FilamentBrowserPlugin::make()
@@ -133,7 +140,7 @@ class AdminPanelProvider extends PanelProvider
                     ->allowMarkdown()
                     ->allowCode()
                     ->allowPreview()
-                    ->basePath(base_path().'/public/storage/products'),
+                    ->basePath(base_path() . '/public/storage/products'),
             ]);
     }
 }
