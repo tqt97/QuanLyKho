@@ -11,6 +11,7 @@
         "bezhansalleh/filament-language-switch": "^3.1",
         "calebporzio/sushi": "^2.5",
         "filament/filament": "^3.2",
+        "flowframe/laravel-trend": "^0.2.0",
         "joshembling/image-optimizer": "^1.4",
         "lara-zeus/quantity": "^1.0",
         "laravel/framework": "^11.9",
@@ -33,6 +34,9 @@
         "phpunit/phpunit": "^11.0.1"
     },
     "autoload": {
+        "files": [
+            "app/helpers.php"
+        ],
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",

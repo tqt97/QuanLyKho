@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ProductResource\Pages;
 
 use App\Filament\Resources\ProductResource;
+use App\Filament\Resources\ProductResource\Widgets\ProductsOverview;
 use App\Imports\ProductImport;
 use AymanAlhattami\FilamentContextMenu\Actions\GoBackAction;
 use AymanAlhattami\FilamentContextMenu\Actions\GoForwardAction;
@@ -12,11 +13,15 @@ use Filament\Actions;
 use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
 use Filament\Pages\Actions\Action;
+use Filament\Pages\Concerns\ExposesTableToWidgets;
+use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ListProducts extends ListRecords
 {
+    use ExposesTableToWidgets;
     use PageHasContextMenu;
 
     protected static string $resource = ProductResource::class;
@@ -56,6 +61,25 @@ class ListProducts extends ListRecords
             RefreshAction::make(),
             GoBackAction::make(),
             GoForwardAction::make(),
+        ];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            ProductsOverview::class,
+        ];
+    }
+
+    public function getTabs(): array
+    {
+        return [
+            'all' => Tab::make(__('shop/order.tabs.all')),
+            'today' => Tab::make(__('shop/order.tabs.today'))
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('created_at', '>', now()->startOfDay())),
+            'this_week' => Tab::make(__('shop/order.tabs.this_week'))
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('created_at', '>', now()->subWeek())),
+            'this_month' => Tab::make(__('shop/order.tabs.this_month'))->modifyQueryUsing(fn (Builder $query) => $query->where('created_at', '>', now()->subMonth())),
         ];
     }
 }

@@ -15,4 +15,5 @@ return [
         'male' => 'Nam',
         'female' => 'Nữ',
     ],
+    'total_customers' => 'Tổng số khách hàng',
 ];

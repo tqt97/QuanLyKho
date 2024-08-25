@@ -289,7 +289,7 @@ class OrderResource extends Resource
                         currency: 'VND',
                         locale: 'vi_VN'
                     )
-                    ->sortable()->color('success')
+                    ->sortable()->color('info')
                     ->summarize(
                         Tables\Columns\Summarizers\Sum::make()
                             ->label(__('shop/order.order_total'))
@@ -542,5 +542,21 @@ class OrderResource extends Resource
             // ->reorderableWithButtons()
             // ->collapsible()
             ->itemLabel(fn (array $state): ?string => Product::find($state['product_id'])?->common_title ? __('shop/order.title_popular_label').Product::find($state['product_id'])?->common_title : null);
+    }
+
+    public function getTabs(): array
+    {
+        return [
+            'all' => \Filament\Resources\Components\Tab::make()
+                ->icon('heroicon-m-user-group')
+            // ->iconPosition(IconPosition::After)
+            ,
+            'weekly_orders' => \Filament\Resources\Components\Tab::make()
+                ->label(__('shop/order.weekly_orders'))
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('created_at', '>=', now()->subDays(7))),
+            'monthly_orders' => \Filament\Resources\Components\Tab::make()
+                ->label(__('shop/order.monthly_orders'))
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('created_at', '>=', now()->subDays(30))),
+        ];
     }
 }

@@ -43,6 +43,11 @@ class Product extends Model
     //     'expiry_date' => 'date:dd/mm/yyyy',
     // ];
 
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
+    }
+
     /** @return BelongsTo<Brand,self> */
     public function brand(): BelongsTo
     {

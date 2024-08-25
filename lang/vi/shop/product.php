@@ -45,4 +45,8 @@ return [
     'customer_name_filter' => 'Tên khách hàng',
     'customer_phone_filter' => 'Số điện thoại',
     'price_filter' => 'Giá',
+    'most_popular_product' => 'Sản phẩm bán chạy nhất',
+    'total_products' => 'Tổng sản phẩm',
+    'most_expensive_product' => 'Sản phẩm đắt nhất',
+    'total_product_price' => 'Tổng tiền hàng',
 ];
