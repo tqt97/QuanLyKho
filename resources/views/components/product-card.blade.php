@@ -1,8 +1,9 @@
 {{-- @props(['product']) --}}
 
 <div class=" bg-white shadow-md rounded-xl duration-500 hover:shadow-2xl transition">
-    <a href="#">
-        <img src="{{ $product->getUrlImage() }}" alt="{{ $product->product_title }}" class="h-auto w-full object-cover rounded-t-xl" />
+    <a href="#" title="{{ $product->product_title }}">
+        <img src="{{ $product->getUrlImage() }}" alt="{{ $product->product_title }}"
+            class="h-auto w-full object-cover rounded-t-xl" />
         <div class="px-4 py-3 w-full">
             {{-- <span class="text-gray-400 mr-3 uppercase text-xs">Brand</span> --}}
             <p class="text-xl font-bold text-orange-600 truncate block mt-2">{{ $product->common_title }}</p>
