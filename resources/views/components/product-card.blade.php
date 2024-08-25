@@ -6,12 +6,15 @@
             class="h-auto w-full object-cover rounded-t-xl" />
         <div class="px-4 py-3 w-full">
             {{-- <span class="text-gray-400 mr-3 uppercase text-xs">Brand</span> --}}
-            <p class="text-xl font-bold text-orange-600 truncate block mt-2">{{ $product->common_title }}</p>
-            <p class="text-lg font-bold text-black truncate block mt-2 mb-2">{{ $product->product_title }}</p>
+            <p class="text-xl font-bold text-gray-900 truncate block mt-2">{{ $product->common_title }}</p>
+            <p class="text-lg font-bold text-gray-800 truncate block mt-2 mb-2">{{ $product->product_title }}</p>
             <hr>
             <div class="flex items-center my-2">
                 <p class="text-md text-black cursor-auto">
-                    <span class="font-bold text-gray-800">Giá bán:</span> {{ $product->formatPrice() }} VND
+                    <span class="font-bold text-gray-800">Giá bán:</span>
+                    <span class="font-bold text-red-600 text-2xl">
+                        {{ $product->formatPrice() }} VND
+                    </span>
                 </p>
                 <del>
                     {{-- <p class="text-sm text-gray-600 cursor-auto ml-2"> {{ $product->original_price }}</p> --}}
