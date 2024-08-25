@@ -3,6 +3,7 @@
 namespace App\Livewire\Product;
 
 use App\Models\Product;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
@@ -50,17 +51,9 @@ class Index extends Component
 
     public function render()
     {
-        // $products = Cache::remember('products', 60, function () {
-        //     return Product::query()
-        //         ->whereLike(['common_title', 'product_title'], $this->search)
-        //         ->orderBy('created_at', $this->sort)
-        //         ->paginate(6);
-        // });
-
-        $products = Product::query()
-                ->whereLike(['common_title', 'product_title'], $this->search)
-                ->orderBy('created_at', $this->sort)
-                ->paginate(6);
+        $products = Product::orderBy('created_at', $this->sort)
+            ->whereLike(['product_title', 'common_title'], $this->search)
+            ->paginate(10);
 
         return view(
             'livewire.product.index',
