@@ -50,12 +50,17 @@ class Index extends Component
 
     public function render()
     {
-        $products = Cache::remember('products', 60, function () {
-            return Product::query()
+        // $products = Cache::remember('products', 60, function () {
+        //     return Product::query()
+        //         ->whereLike(['common_title', 'product_title'], $this->search)
+        //         ->orderBy('created_at', $this->sort)
+        //         ->paginate(6);
+        // });
+
+        $products = Product::query()
                 ->whereLike(['common_title', 'product_title'], $this->search)
                 ->orderBy('created_at', $this->sort)
                 ->paginate(6);
-        });
 
         return view(
             'livewire.product.index',
