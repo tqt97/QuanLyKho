@@ -36,7 +36,7 @@ class ManageOrders extends ManageRecords
 
                     // $uid = uniqid();
                     $date = date('d-m-Y');
-                    $data['uuid'] = $date . '-' . $last_id;
+                    $data['uuid'] = $date.'-'.$last_id;
 
                     return $data;
                 })

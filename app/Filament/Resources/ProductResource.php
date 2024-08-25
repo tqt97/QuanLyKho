@@ -84,8 +84,8 @@ class ProductResource extends Resource
                                             ->icon('heroicon-s-clipboard-document-check')
                                             ->action(function ($livewire, $state) {
                                                 $livewire->js(
-                                                    'window.navigator.clipboard.writeText("' . $state . '");
-                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+                                                    'window.navigator.clipboard.writeText("'.$state.'");
+                    $tooltip("'.__('Copied to clipboard').'", { timeout: 1500 });'
                                                 );
                                             })
                                     )
@@ -101,8 +101,8 @@ class ProductResource extends Resource
                                             ->icon('heroicon-s-clipboard-document-check')
                                             ->action(function ($livewire, $state) {
                                                 $livewire->js(
-                                                    'window.navigator.clipboard.writeText("' . $state . '");
-                                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+                                                    'window.navigator.clipboard.writeText("'.$state.'");
+                                    $tooltip("'.__('Copied to clipboard').'", { timeout: 1500 });'
                                                 );
                                             })
                                     )
@@ -232,7 +232,7 @@ class ProductResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('product_title')
                     ->label(__('shop/product.title_product'))
-                    ->description(fn(Product $record): string => "Số lượng: " . $record->qty_per_product . ' - Liều dùng: ' . $record->dosage)
+                    ->description(fn (Product $record): string => 'Số lượng: '.$record->qty_per_product.' - Liều dùng: '.$record->dosage)
                     // ->limit(50)
                     ->wrap()
                     ->copyable()

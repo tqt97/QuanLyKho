@@ -9,7 +9,6 @@ use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
 use Filament\Forms;
-use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -19,7 +18,6 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
-use Schmeits\FilamentCharacterCounter\Forms\Components\Textarea;
 use Schmeits\FilamentCharacterCounter\Forms\Components\TextInput;
 
 class OrderResource extends Resource
@@ -111,8 +109,8 @@ class OrderResource extends Resource
                                         ->icon('heroicon-s-clipboard-document-check')
                                         ->action(function ($livewire, $state) {
                                             $livewire->js(
-                                                'window.navigator.clipboard.writeText("' . $state . '");
-                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+                                                'window.navigator.clipboard.writeText("'.$state.'");
+                    $tooltip("'.__('Copied to clipboard').'", { timeout: 1500 });'
                                             );
                                         })
                                 )
@@ -141,8 +139,8 @@ class OrderResource extends Resource
                                         ->icon('heroicon-s-clipboard-document-check')
                                         ->action(function ($livewire, $state) {
                                             $livewire->js(
-                                                'window.navigator.clipboard.writeText("' . $state . '");
-                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+                                                'window.navigator.clipboard.writeText("'.$state.'");
+                    $tooltip("'.__('Copied to clipboard').'", { timeout: 1500 });'
                                             );
                                         })
                                 )
@@ -163,8 +161,8 @@ class OrderResource extends Resource
                                         ->icon('heroicon-s-clipboard-document-check')
                                         ->action(function ($livewire, $state) {
                                             $livewire->js(
-                                                'window.navigator.clipboard.writeText("' . $state . '");
-                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+                                                'window.navigator.clipboard.writeText("'.$state.'");
+                    $tooltip("'.__('Copied to clipboard').'", { timeout: 1500 });'
                                             );
                                         })
                                 )
@@ -180,7 +178,7 @@ class OrderResource extends Resource
                                 ->options(
                                     OrderStatus::class
                                 )
-                                ->hidden(fn(Order $order) => ! $order->exists)
+                                ->hidden(fn (Order $order) => ! $order->exists)
                                 ->searchable()
                                 ->searchDebounce(300),
                         ])
@@ -196,7 +194,7 @@ class OrderResource extends Resource
                                 ->requiresConfirmation()
                                 ->icon('heroicon-o-arrow-path')
                                 ->color('danger')
-                                ->action(fn(Forms\Set $set) => $set(
+                                ->action(fn (Forms\Set $set) => $set(
                                     'items',
                                     []
                                 )),
@@ -227,13 +225,13 @@ class OrderResource extends Resource
                             ->schema([
                                 Forms\Components\Placeholder::make('created_at')
                                     ->label(__('shop/order.created_at'))
-                                    ->content(fn(?Order $record): ?string => $record->created_at?->diffForHumans()),
+                                    ->content(fn (?Order $record): ?string => $record->created_at?->diffForHumans()),
 
                                 Forms\Components\Placeholder::make('updated_at')
                                     ->label(__('shop/order.updated_at'))
-                                    ->content(fn(?Order $record): ?string => $record->updated_at?->diffForHumans()),
+                                    ->content(fn (?Order $record): ?string => $record->updated_at?->diffForHumans()),
                             ])
-                            ->hidden(fn(?Order $record) => $record === null)
+                            ->hidden(fn (?Order $record) => $record === null)
                             ->columns(1),
                         Forms\Components\Group::make()->schema([
                             TextInput::make('notes')->label(__('shop/order.note'))
@@ -242,8 +240,8 @@ class OrderResource extends Resource
                                         ->icon('heroicon-s-clipboard-document-check')
                                         ->action(function ($livewire, $state) {
                                             $livewire->js(
-                                                'window.navigator.clipboard.writeText("' . $state . '");
-                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+                                                'window.navigator.clipboard.writeText("'.$state.'");
+                    $tooltip("'.__('Copied to clipboard').'", { timeout: 1500 });'
                                             );
                                         })
                                 )
@@ -406,8 +404,8 @@ class OrderResource extends Resource
                             ->action(function ($livewire, $state) {
                                 $name = Product::find($state)?->product_title;
                                 $livewire->js(
-                                    'window.navigator.clipboard.writeText("' . $name . '");
-                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+                                    'window.navigator.clipboard.writeText("'.$name.'");
+                    $tooltip("'.__('Copied to clipboard').'", { timeout: 1500 });'
                                 );
                             })
                     ),
@@ -516,7 +514,7 @@ class OrderResource extends Resource
 
                         return ProductResource::getUrl('edit', ['record' => $product]);
                     }, shouldOpenInNewTab: true)
-                    ->hidden(fn(array $arguments, Repeater $component): bool => blank($component->getRawItemState($arguments['item'])['product_id'])),
+                    ->hidden(fn (array $arguments, Repeater $component): bool => blank($component->getRawItemState($arguments['item'])['product_id'])),
             ])
             ->orderColumn('sort')
             ->defaultItems(1)
@@ -527,6 +525,6 @@ class OrderResource extends Resource
             ->required()
             // ->reorderableWithButtons()
             // ->collapsible()
-            ->itemLabel(fn(array $state): ?string => Product::find($state['product_id'])?->common_title ? __('shop/order.title_popular_label') . Product::find($state['product_id'])?->common_title : null);
+            ->itemLabel(fn (array $state): ?string => Product::find($state['product_id'])?->common_title ? __('shop/order.title_popular_label').Product::find($state['product_id'])?->common_title : null);
     }
 }
