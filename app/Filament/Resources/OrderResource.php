@@ -2,29 +2,30 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\OrderStatus;
-use App\Filament\Resources\OrderResource\Pages;
+use Filament\Forms;
+use Filament\Tables;
 use App\Models\Bonus;
-use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
-use Filament\Forms;
-use Filament\Forms\Components\Repeater;
+use App\Models\Customer;
 use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Support\Enums\MaxWidth;
-use Filament\Tables;
-use Filament\Tables\Enums\FiltersLayout;
-use Filament\Tables\Filters\QueryBuilder;
-use Filament\Tables\Filters\QueryBuilder\Constraints\DateConstraint;
-use Filament\Tables\Filters\QueryBuilder\Constraints\NumberConstraint;
-use Filament\Tables\Filters\QueryBuilder\Constraints\SelectConstraint;
-use Filament\Tables\Filters\QueryBuilder\Constraints\TextConstraint;
+use App\Enums\OrderStatus;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
+use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Log;
+use Filament\Support\Enums\MaxWidth;
+use Filament\Forms\Components\Repeater;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\QueryBuilder;
+use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\OrderResource\Pages;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 use Schmeits\FilamentCharacterCounter\Forms\Components\TextInput;
+use Filament\Tables\Filters\QueryBuilder\Constraints\DateConstraint;
+use Filament\Tables\Filters\QueryBuilder\Constraints\TextConstraint;
+use Filament\Tables\Filters\QueryBuilder\Constraints\NumberConstraint;
+use Filament\Tables\Filters\QueryBuilder\Constraints\SelectConstraint;
 
 class OrderResource extends Resource
 {
@@ -115,8 +116,8 @@ class OrderResource extends Resource
                                         ->icon('heroicon-s-clipboard-document-check')
                                         ->action(function ($livewire, $state) {
                                             $livewire->js(
-                                                'window.navigator.clipboard.writeText("'.$state.'");
-                    $tooltip("'.__('Copied to clipboard').'", { timeout: 1500 });'
+                                                'window.navigator.clipboard.writeText("' . $state . '");
+                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
                                             );
                                         })
                                 )
@@ -145,8 +146,8 @@ class OrderResource extends Resource
                                         ->icon('heroicon-s-clipboard-document-check')
                                         ->action(function ($livewire, $state) {
                                             $livewire->js(
-                                                'window.navigator.clipboard.writeText("'.$state.'");
-                    $tooltip("'.__('Copied to clipboard').'", { timeout: 1500 });'
+                                                'window.navigator.clipboard.writeText("' . $state . '");
+                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
                                             );
                                         })
                                 )
@@ -167,8 +168,8 @@ class OrderResource extends Resource
                                         ->icon('heroicon-s-clipboard-document-check')
                                         ->action(function ($livewire, $state) {
                                             $livewire->js(
-                                                'window.navigator.clipboard.writeText("'.$state.'");
-                    $tooltip("'.__('Copied to clipboard').'", { timeout: 1500 });'
+                                                'window.navigator.clipboard.writeText("' . $state . '");
+                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
                                             );
                                         })
                                 )
@@ -184,7 +185,7 @@ class OrderResource extends Resource
                                 ->options(
                                     OrderStatus::class
                                 )
-                                ->hidden(fn (Order $order) => ! $order->exists)
+                                ->hidden(fn(Order $order) => ! $order->exists)
                                 ->searchable()
                                 ->searchDebounce(300),
                         ])
@@ -200,7 +201,7 @@ class OrderResource extends Resource
                                 ->requiresConfirmation()
                                 ->icon('heroicon-o-arrow-path')
                                 ->color('danger')
-                                ->action(fn (Forms\Set $set) => $set(
+                                ->action(fn(Forms\Set $set) => $set(
                                     'items',
                                     []
                                 )),
@@ -231,13 +232,13 @@ class OrderResource extends Resource
                             ->schema([
                                 Forms\Components\Placeholder::make('created_at')
                                     ->label(__('shop/order.created_at'))
-                                    ->content(fn (?Order $record): ?string => $record->created_at?->diffForHumans()),
+                                    ->content(fn(?Order $record): ?string => $record->created_at?->diffForHumans()),
 
                                 Forms\Components\Placeholder::make('updated_at')
                                     ->label(__('shop/order.updated_at'))
-                                    ->content(fn (?Order $record): ?string => $record->updated_at?->diffForHumans()),
+                                    ->content(fn(?Order $record): ?string => $record->updated_at?->diffForHumans()),
                             ])
-                            ->hidden(fn (?Order $record) => $record === null)
+                            ->hidden(fn(?Order $record) => $record === null)
                             ->columns(1),
                         Forms\Components\Group::make()->schema([
                             TextInput::make('notes')->label(__('shop/order.note'))
@@ -246,8 +247,8 @@ class OrderResource extends Resource
                                         ->icon('heroicon-s-clipboard-document-check')
                                         ->action(function ($livewire, $state) {
                                             $livewire->js(
-                                                'window.navigator.clipboard.writeText("'.$state.'");
-                    $tooltip("'.__('Copied to clipboard').'", { timeout: 1500 });'
+                                                'window.navigator.clipboard.writeText("' . $state . '");
+                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
                                             );
                                         })
                                 )
@@ -328,18 +329,67 @@ class OrderResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                QueryBuilder::make()
-                    ->constraints([
-                        TextConstraint::make('customer.name')->label(__('shop/product.customer_name_filter'))->icon('heroicon-o-users'),
-                        TextConstraint::make('customer.phone')->label(__('shop/product.customer_phone_filter'))->icon('heroicon-o-phone'),
-                        NumberConstraint::make('total_price')->label(__('shop/product.price_filter'))->icon('heroicon-o-currency-dollar'),
-                        SelectConstraint::make('status')
-                            ->icon('heroicon-o-command-line')
-                            ->options(OrderStatus::class)
-                            ->label(__('shop/order.status')),
-                        DateConstraint::make('created_at')->label(__('shop/product.created_from'))->icon('heroicon-o-calendar'),
-                    ]),
+                Tables\Filters\TrashedFilter::make(),
+                Tables\Filters\SelectFilter::make('status')
+                    ->label(__('shop/order.status'))
+                    ->options(OrderStatus::class)
+                    ->preload()
+                    ->searchable(),
+                Tables\Filters\SelectFilter::make('customer_id')
+                    ->label(__('shop/order.customer'))
+                    ->options(
+                        function (Builder $query) {
+                            return Customer::pluck('name', 'id');
+                        }
+                    )
+                    ->searchable(),
+                Tables\Filters\SelectFilter::make('customer_phone')
+                    ->label(__('shop/order.customer_phone'))
+                    ->relationship('customer', 'phone')
+                    ->preload()
+                    ->options(
+                        function (Builder $query) {
+                            return Customer::pluck('phone', 'id');
+                        }
+                    )
+                    ->searchable(),
+                Tables\Filters\Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('created_from')->label(__('shop/order.created_from')),
+
+                        DatePicker::make('created_until')->label(__('shop/order.created_until')),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    }),
+
+                // Tables\Filters\DateRangeFilter::make('created_at')
+                //     ->label(__('shop/order.created_at'))
+                //     ->defaultDateRange(now()->subDays(7), now()),
+
+
+                // QueryBuilder::make()
+                // ->constraints([
+                //     TextConstraint::make('customer.name')->label(__('shop/product.customer_name_filter'))->icon('heroicon-o-users'),
+                //     TextConstraint::make('customer.phone')->label(__('shop/product.customer_phone_filter'))->icon('heroicon-o-phone'),
+                //     NumberConstraint::make('total_price')->label(__('shop/product.price_filter'))->icon('heroicon-o-currency-dollar'),
+                //     SelectConstraint::make('status')
+                //         ->icon('heroicon-o-command-line')
+                //         ->options(OrderStatus::class)
+                //         ->label(__('shop/order.status')),
+                //     DateConstraint::make('created_at')->label(__('shop/product.created_from'))->icon('heroicon-o-calendar'),
+                // ]),
             ], layout: FiltersLayout::AboveContentCollapsible)
+            ->filtersFormColumns(5)
+            ->defaultSort('created_at', 'desc')
             ->actions([
                 Tables\Actions\EditAction::make()->modalWidth(MaxWidth::SevenExtraLarge)->modal(),
                 Tables\Actions\DeleteAction::make(),
@@ -420,8 +470,8 @@ class OrderResource extends Resource
                             ->action(function ($livewire, $state) {
                                 $name = Product::find($state)?->product_title;
                                 $livewire->js(
-                                    'window.navigator.clipboard.writeText("'.$name.'");
-                    $tooltip("'.__('Copied to clipboard').'", { timeout: 1500 });'
+                                    'window.navigator.clipboard.writeText("' . $name . '");
+                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
                                 );
                             })
                     ),
@@ -530,7 +580,7 @@ class OrderResource extends Resource
 
                         return ProductResource::getUrl('edit', ['record' => $product]);
                     }, shouldOpenInNewTab: true)
-                    ->hidden(fn (array $arguments, Repeater $component): bool => blank($component->getRawItemState($arguments['item'])['product_id'])),
+                    ->hidden(fn(array $arguments, Repeater $component): bool => blank($component->getRawItemState($arguments['item'])['product_id'])),
             ])
             ->orderColumn('sort')
             ->defaultItems(1)
@@ -541,7 +591,7 @@ class OrderResource extends Resource
             ->required()
             // ->reorderableWithButtons()
             // ->collapsible()
-            ->itemLabel(fn (array $state): ?string => Product::find($state['product_id'])?->common_title ? __('shop/order.title_popular_label').Product::find($state['product_id'])?->common_title : null);
+            ->itemLabel(fn(array $state): ?string => Product::find($state['product_id'])?->common_title ? __('shop/order.title_popular_label') . Product::find($state['product_id'])?->common_title : null);
     }
 
     public function getTabs(): array
@@ -553,10 +603,10 @@ class OrderResource extends Resource
             ,
             'weekly_orders' => \Filament\Resources\Components\Tab::make()
                 ->label(__('shop/order.weekly_orders'))
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('created_at', '>=', now()->subDays(7))),
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('created_at', '>=', now()->subDays(7))),
             'monthly_orders' => \Filament\Resources\Components\Tab::make()
                 ->label(__('shop/order.monthly_orders'))
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('created_at', '>=', now()->subDays(30))),
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('created_at', '>=', now()->subDays(30))),
         ];
     }
 }

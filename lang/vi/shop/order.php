@@ -90,4 +90,8 @@ return [
     'total_price_this_week' => 'Tổng tiền tuần này',
     'total_order_today' => 'Tổng đơn hàng hôm nay',
     'total_order_this_week' => 'Tổng đơn hàng tuần này',
+    'created_from' => 'Từ ngày',
+    'created_until' => 'Đến ngày',
+    'price_from' => 'Giá từ',
+    'price_until' => 'Giá đến',
 ];
