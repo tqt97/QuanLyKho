@@ -21,10 +21,10 @@ class ProductImport implements ToModel, WithHeadingRow
         return new Product([
             'common_title' => $row['common_title'],
             'product_title' => $row['product_title'],
-            'slug' => Str::slug($row['product_title']).'-'.rand(1000, 9999),
+            'slug' => Str::slug($row['product_title']) . '-' . rand(1000, 9999),
             'description' => $row['description'],
             'dosage' => $row['dosage'],
-            'expiry_date' => $row['expiry_date'],
+            'expiry' => $row['expiry'],
             'qty_per_product' => $row['qty_per_product'],
             'original_price' => $row['original_price'],
             'sell_price' => $row['sell_price'],

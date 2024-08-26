@@ -2,24 +2,25 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ProductResource\Pages;
-use App\Models\Product;
 use Filament\Forms;
+use Filament\Tables;
+use App\Models\Product;
 use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Filament\Support\RawJs;
+use Illuminate\Support\Str;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\MaxWidth;
-use Filament\Tables;
-use Filament\Tables\Filters\QueryBuilder;
-use Filament\Tables\Filters\QueryBuilder\Constraints\NumberConstraint;
-use Filament\Tables\Filters\QueryBuilder\Constraints\TextConstraint;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Tables\Filters\QueryBuilder;
+use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\ProductResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Str;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use Schmeits\FilamentCharacterCounter\Forms\Components\Textarea;
 use Schmeits\FilamentCharacterCounter\Forms\Components\TextInput;
+use Filament\Tables\Filters\QueryBuilder\Constraints\TextConstraint;
+use Filament\Tables\Filters\QueryBuilder\Constraints\NumberConstraint;
 
 class ProductResource extends Resource
 {
@@ -80,8 +81,8 @@ class ProductResource extends Resource
                                             ->icon('heroicon-s-clipboard-document-check')
                                             ->action(function ($livewire, $state) {
                                                 $livewire->js(
-                                                    'window.navigator.clipboard.writeText("'.$state.'");
-                    $tooltip("'.__('Copied to clipboard').'", { timeout: 1500 });'
+                                                    'window.navigator.clipboard.writeText("' . $state . '");
+                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
                                                 );
                                             })
                                     )
@@ -97,8 +98,8 @@ class ProductResource extends Resource
                                             ->icon('heroicon-s-clipboard-document-check')
                                             ->action(function ($livewire, $state) {
                                                 $livewire->js(
-                                                    'window.navigator.clipboard.writeText("'.$state.'");
-                                    $tooltip("'.__('Copied to clipboard').'", { timeout: 1500 });'
+                                                    'window.navigator.clipboard.writeText("' . $state . '");
+                                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
                                                 );
                                             })
                                     )
@@ -181,8 +182,8 @@ class ProductResource extends Resource
                                     ->label(__('shop/product.original_price'))
                                     ->numeric()
                                     ->rules(['regex:/^\d{1,6}(\.\d{0,2})?$/'])
-                                    // ->suffix('vnd')
                                     ->suffix('₫')
+                                    ->mask(moneyMask())
                                     ->columnSpan(1),
 
                                 TextInput::make('sell_price')
@@ -190,7 +191,7 @@ class ProductResource extends Resource
                                     ->numeric()
                                     ->rules(['regex:/^\d{1,6}(\.\d{0,2})?$/'])
                                     ->suffix('₫')
-                                    // ->suffix('vnd')
+                                    ->mask(moneyMask())
                                     ->required()->columnSpan(1),
                                 TextInput::make('qty_per_product')
                                     ->label(__('shop/product.quantity_per_pack'))
@@ -198,8 +199,8 @@ class ProductResource extends Resource
                                     ->characterLimit(255)
                                     ->required()
                                     ->columnSpan(1),
-                                TextInput::make('expiry_date')
-                                    ->label(__('shop/product.expiry_date'))
+                                TextInput::make('expiry')
+                                    ->label(__('shop/product.expiry'))
                                     ->suffixIcon('heroicon-m-calendar')
                                     // ->format('d/m/Y')
                                     // ->displayFormat('d/m/Y')
@@ -228,7 +229,7 @@ class ProductResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('product_title')
                     ->label(__('shop/product.title_product'))
-                    ->description(fn (Product $record): string => 'Số lượng: '.$record->qty_per_product.' - Liều dùng: '.$record->dosage)
+                    ->description(fn(Product $record): string => 'Số lượng: ' . $record->qty_per_product . ' - Liều dùng: ' . $record->dosage)
                     // ->limit(50)
                     ->wrap()
                     ->copyable()
@@ -244,8 +245,8 @@ class ProductResource extends Resource
                     ->label(__('shop/product.sell_price'))
                     ->money('vnd')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('expiry_date')
-                    ->label(__('shop/product.expiry_date'))
+                Tables\Columns\TextColumn::make('expiry')
+                    ->label(__('shop/product.expiry'))
                     // ->date('m/Y')
                     ->sortable(),
                 // Tables\Columns\TextColumn::make('qty_per_product')

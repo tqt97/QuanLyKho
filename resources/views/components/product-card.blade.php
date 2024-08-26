@@ -34,7 +34,7 @@
             </div>
             <div class="my-2">
                 <span class="mr-3 text-md text-black mt-2 mb-2">
-                    <span class="font-bold text-gray-800">Hạn sử dụng:</span> {{ $product->expiry_date }}</span>
+                    <span class="font-bold text-gray-800">Hạn sử dụng:</span> {{ $product->expiry }}</span>
             </div>
             <div class="text-black text-justify mt-2">
                 <span class="font-bold text-gray-800">Mô tả:</span>

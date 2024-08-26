@@ -32,15 +32,15 @@ class Product extends Model
         'sell_price',
         'description',
         'image',
-        'expiry_date',
+        'expiry',
     ];
 
     public function scopeSearch(Builder $query, string $search = ''): void
     {
-        $query->where('product_title', 'like', '%'.$search.'%');
+        $query->where('product_title', 'like', '%' . $search . '%');
     }
     // protected $casts = [
-    //     'expiry_date' => 'date:dd/mm/yyyy',
+    //     'expiry' => 'date:dd/mm/yyyy',
     // ];
 
     public function order()
@@ -65,7 +65,7 @@ class Product extends Model
         if (strpos($this->image, 'http') === 0 || strpos($this->image, 'https') === 0) {
             return $this->image;
         } else {
-            return asset('storage/'.$this->image);
+            return asset('storage/' . $this->image);
         }
     }
 

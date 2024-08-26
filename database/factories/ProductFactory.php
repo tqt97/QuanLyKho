@@ -25,7 +25,7 @@ class ProductFactory extends Factory
             'slug' => \Illuminate\Support\Str::slug($title_product),
             'description' => $this->faker->sentence,
             'dosage' => $this->faker->randomNumber(1, true),
-            'expiry_date' => '06-2028',
+            'expiry' => '06-2028',
             'qty_per_product' => $this->faker->randomNumber(3, false),
             'original_price' => $this->faker->randomNumber(6, true),
             'sell_price' => $this->faker->randomNumber(6, true),
