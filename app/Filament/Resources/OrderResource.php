@@ -102,7 +102,7 @@ class OrderResource extends Resource
                                 ->searchDebounce(300)
                                 ->preload()
                                 ->live(debounce: 500)
-                                ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set, $state) {
+                                ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set, $state, $livewire) {
                                     $customer = Customer::where('id', $state)->first();
 
                                     if ($customer === null || empty($state)) {
@@ -110,11 +110,26 @@ class OrderResource extends Resource
                                     } else {
                                         $set('customer_name', $customer->name);
                                     }
+
+                                    // Log::info("stage: " . $state);
+                                    if ($state !== null && $state !== '') {
+                                        $customer = Customer::where('id', $state)->first();
+                                        $state = $customer->phone;
+                                    }
+                                    $livewire->js(
+                                        'window.navigator.clipboard.writeText("' . $state . '");
+                                        $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+                                    );
                                 })
                                 ->suffixAction(
                                     Forms\Components\Actions\Action::make('copy')
                                         ->icon('heroicon-s-clipboard-document-check')
                                         ->action(function ($livewire, $state) {
+                                            Log::info("stage: " . $state);
+                                            if ($state !== null && $state !== '') {
+                                                $customer = Customer::where('id', $state)->first();
+                                                $state = $customer->phone;
+                                            }
                                             $livewire->js(
                                                 'window.navigator.clipboard.writeText("' . $state . '");
                     $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'

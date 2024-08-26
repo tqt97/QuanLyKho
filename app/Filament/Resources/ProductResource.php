@@ -128,16 +128,36 @@ class ProductResource extends Resource
                                 //                         })
                                 //                 )
                                 //                 ->columnSpan('full'),
-                                TextArea::make('dosage')
+                                TextInput::make('dosage')
                                     ->label(__('shop/product.dosage'))
-                                    ->rows(3)
+                                    // ->rows(3)
                                     ->required()
-                                    ->columnSpanFull(),
+                                    ->columnSpanFull()
+                                    ->suffixAction(
+                                        Forms\Components\Actions\Action::make('copy')
+                                            ->icon('heroicon-s-clipboard-document-check')
+                                            ->action(function ($livewire, $state) {
+                                                $livewire->js(
+                                                    'window.navigator.clipboard.writeText("' . $state . '");
+                                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+                                                );
+                                            })
+                                    ),
 
-                                TextArea::make('description')
+                                TextInput::make('description')
                                     ->label(__('shop/product.description'))
-                                    ->rows(5)
+                                    // ->rows(5)
                                     // ->cols(5)
+                                    ->suffixAction(
+                                        Forms\Components\Actions\Action::make('copy')
+                                            ->icon('heroicon-s-clipboard-document-check')
+                                            ->action(function ($livewire, $state) {
+                                                $livewire->js(
+                                                    'window.navigator.clipboard.writeText("' . $state . '");
+                                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+                                                );
+                                            })
+                                    )
                                     ->columnSpan('full'),
                             ])->columns(2),
                         // Forms\Components\Tabs\Tab::make('SEO')
