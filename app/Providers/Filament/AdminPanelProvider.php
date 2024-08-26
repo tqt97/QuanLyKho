@@ -2,29 +2,30 @@
 
 namespace App\Providers\Filament;
 
+use Filament\Pages;
+use Filament\Panel;
+use Filament\Widgets;
+use Filament\PanelProvider;
+use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
+use Filament\Support\Enums\MaxWidth;
+use Filament\Navigation\NavigationItem;
+use App\Filament\Widgets\DashboardAdmin;
+use Filament\Navigation\NavigationGroup;
+use Filament\Http\Middleware\Authenticate;
+use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use TomatoPHP\FilamentBrowser\FilamentBrowserPlugin;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Session\Middleware\AuthenticateSession;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use App\Filament\Resources\OrderResource\Widgets\LatestOrders;
 use App\Filament\Resources\OrderResource\Widgets\OrdersPerDayChart;
 use App\Filament\Resources\ProductResource\Widgets\ProductsOverview;
-use App\Filament\Widgets\DashboardAdmin;
-use Filament\Http\Middleware\Authenticate;
-use Filament\Http\Middleware\DisableBladeIconComponents;
-use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Navigation\NavigationGroup;
-use Filament\Navigation\NavigationItem;
-use Filament\Pages;
-use Filament\Panel;
-use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
-use Filament\Support\Enums\MaxWidth;
-use Filament\Widgets;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
-use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Session\Middleware\AuthenticateSession;
-use Illuminate\Session\Middleware\StartSession;
-use Illuminate\View\Middleware\ShareErrorsFromSession;
-use TomatoPHP\FilamentBrowser\FilamentBrowserPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -74,6 +75,11 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
+            ->renderHook(
+                // PanelsRenderHook::BODY_END,
+                PanelsRenderHook::FOOTER,
+                fn() => view('filament.footer')
+            )
             // ->collapsibleNavigationGroups(false)
             ->sidebarCollapsibleOnDesktop()
             ->sidebarFullyCollapsibleOnDesktop()
