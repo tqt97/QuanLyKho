@@ -467,13 +467,13 @@ class OrderResource extends Resource
                         $set('price', 0);
                         $set('total', 0);
                         $set('quantity', 1);
-                        Log::info('Change state: ' . $state); // id product
+                        // Log::info('Change state: ' . $state); // id product
                         // return;
                         // } else {
                         $set('total_price', 0);
 
 
-                        Log::info('Change state => total price ' . $get('total_price'));
+                        // Log::info('Change state => total price ' . $get('total_price'));
                         $price = Product::find($state)?->sell_price ?? 0;
                         $set('quantity', 1);
                         $set('price', $price);
@@ -567,19 +567,19 @@ class OrderResource extends Resource
                 $selectedProducts = collect($items)->filter(fn($item) => !empty($item['product_id']) && !empty($item['quantity']));
 
                 // Log::info('>> All items: ' . json_encode($items));
-                Log::info('>> All items Selected: ' . json_encode($selectedProducts));
+                // Log::info('>> All items Selected: ' . json_encode($selectedProducts));
                 $prices = Product::find($selectedProducts->pluck('product_id'))->pluck('sell_price', 'id');
-                Log::info('>> All prices: ' . json_encode($prices));
+                // Log::info('>> All prices: ' . json_encode($prices));
 
                 $subtotal = $selectedProducts->reduce(function ($subtotal, $product) use ($prices) {
-                    Log::info('>> Subtotal: ' . $subtotal);
-                    Log::info('>> Product in reduce: ' . $product['product_id']);
-                    Log::info('>> Price in product: ' . $product['price']);
-                    Log::info('>> Price : ' . $prices[$product['product_id']]);
+                    // Log::info('>> Subtotal: ' . $subtotal);
+                    // Log::info('>> Product in reduce: ' . $product['product_id']);
+                    // Log::info('>> Price in product: ' . $product['price']);
+                    // Log::info('>> Price : ' . $prices[$product['product_id']]);
                     $price_final = $product['price'] ? $product['price'] : $prices[$product['product_id']];
                     return $subtotal + ($price_final * $product['quantity']);
                 }, 0);
-                Log::info('>> Subtotal: ' . $subtotal);
+                // Log::info('>> Subtotal: ' . $subtotal);
                 $set('total_price', $subtotal);
                 // $set('total', $subtotal + ($subtotal * ($get('taxes') / 100)));
 
@@ -717,7 +717,7 @@ class OrderResource extends Resource
                     $price_sell = $product->sell_price;
                     $price_edit = $orderItem['price'];
                     $price_final = $price_edit ? $price_edit : $price_sell;
-                    Log::info('>> price_final: ' . $price_final . ' ,price_sell: ' . $price_sell . ' ,price_edit: ' . $price_edit);
+                    // Log::info('>> price_final: ' . $price_final . ' ,price_sell: ' . $price_sell . ' ,price_edit: ' . $price_edit);
 
                     $total_price += $price_final * $orderItem['quantity'];
                 }
