@@ -224,7 +224,20 @@ class OrderResource extends Resource
                                     ->label(__('shop/order.order_total'))
                                     ->readOnly()
                                     ->numeric()
+                                    ->currencyMask(thousandSeparator: '.', decimalSeparator: ',', precision: 2)
+
+                                    // ->mask(function (Forms\Get $get, Forms\Set $set, $state) {
+                                    //     Log::info('total_price: ' . $get('total_price'));
+                                    //     return format_price($get('total_price'));
+                                    // })
                                     ->suffix('₫')
+                                    // ->afterStateUpdated(
+                                    //     function (Forms\Get $get, Forms\Set $set, $state) {
+                                    //         Log::info('total_price: ' . $state);
+                                    //         Log::info($get('total_price'));
+                                    //         $set('total_price', format_price($state));
+                                    //     }
+                                    // )
                                     ->default(0),
                             ])
                             ->columns(1),
@@ -441,29 +454,42 @@ class OrderResource extends Resource
                     ->label(__('shop/order.title_product'))
                     ->options(Product::query()->pluck('product_title', 'id'))
                     ->required()
-                    ->reactive()
-                    // ->afterStateUpdated(fn($state, Forms\Set $set) => $set('unit_price', Product::find($state)?->price ?? 0,))
+                    ->disableOptionWhen(function ($value, $state, Forms\Get $get) {
+                        return collect($get('../*.product_id'))
+                            ->reject(fn($id) => $id == $state)
+                            ->filter()
+                            ->contains($value) || $get('product_id') !== null;
+                    })
+                    ->live()
                     ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set, $state) {
                         // Log::info('state: ' . $state);
-                        if ($state === null || empty($state)) {
-                            $set('price', 0);
-                            $set('total', 0);
-                            $set('quantity', 1);
-
-                            return;
-                        }
+                        // if ($state === null || empty($state)) {
+                        $set('price', 0);
+                        $set('total', 0);
                         $set('quantity', 1);
-                        $set('price', Product::find($state)?->sell_price ?? 0);
-                        $set('total', 1 * $get('price'));
+                        Log::info('Change state: ' . $state); // id product
+                        // return;
+                        // } else {
+                        $set('total_price', 0);
+
+
+                        Log::info('Change state => total price ' . $get('total_price'));
+                        $price = Product::find($state)?->sell_price ?? 0;
+                        $set('quantity', 1);
+                        $set('price', $price);
+                        $set('total', 1 * $price);
+
+                        // Log::info('Change state: ' . $state);
+                        // }
+                        // static::amount($set, $get);
                     })
                     ->distinct()
-                    ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                    // ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                     ->columnSpan([
                         'md' => 6,
                     ])
                     ->searchable()
                     ->searchDebounce(300)
-
                     ->suffixAction(
                         Forms\Components\Actions\Action::make('copy')
                             ->icon('heroicon-s-clipboard-document-check')
@@ -482,7 +508,7 @@ class OrderResource extends Resource
                     ->minValue(1)
                     ->default(1)
                     ->columnSpan(['md' => 2])
-                    ->live(500)
+                    ->reactive()
                     ->required()
                     // ->afterStateUpdated(fn($state, Forms\Set $set) => $set('total', Product::find($state)?->price * $state['quantity'] ?? 0))
                     ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set) {
@@ -491,25 +517,27 @@ class OrderResource extends Resource
                             $set('total', $get('quantity') * $get('price'));
                         }
                     }),
+                // Forms\Components\TextInput::make('vat')
+                // ->label(__('shop/order.vat'))
+                // ->default(10),
 
                 Forms\Components\TextInput::make('price')
                     ->label(__('shop/order.unit_price'))
                     // ->disabled()
-                    // ->readOnly()
-                    // ->dehydrated()
                     ->suffix('₫')
                     ->numeric()
                     ->minValue(1)
-                    // ->debounce(300)
                     // ->live()
-                    // ->currencyMask(thousandSeparator: '.', decimalSeparator: ',', precision: 2)
-
-                    ->live(debounce: 300)
+                    ->currencyMask(thousandSeparator: '.', decimalSeparator: ',', precision: 2)
+                    ->live(500)
                     ->required()
                     // ->formatStateUsing(fn($state) => $state ?? number_format($state, 3, ',', '.'))
                     ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set) {
-                        // if ($get('quantity') >= 1 && $get('price') > 0)
-                        $set('total', $get('quantity') * $get('price'));
+                        if ($get('quantity') >= 1 && $get('price') > 0)
+                            $set('total', $get('quantity') * $get('price'));
+
+                        // set total price
+                        // $set('total', $get('quantity') * $get('price'));
                         // });
                         // $set('total', $get('quantity') * $get('price'));
                     })
@@ -520,44 +548,106 @@ class OrderResource extends Resource
                     ->label(__('shop/order.total_single_product'))
                     // ->disabled()
                     // ->reactive()
-                    ->live(debounce: 300)
+                    ->reactive()
                     ->suffix('₫')
                     ->readOnly()
                     ->numeric()
                     ->required()
-                    // ->currencyMask(thousandSeparator: '.', decimalSeparator: ',', precision: 2)
+                    ->currencyMask(thousandSeparator: '.', decimalSeparator: ',', precision: 2)
 
                     ->columnSpan([
                         'md' => 2,
                     ]),
             ])
+            ->live()
             ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set) {
                 $items = $get('items');
                 $total_price = 0;
-                // $discount = 0;
-                // $vat = 0;
-                foreach ($items as $orderItem) {
-                    $product = Product::find($orderItem['product_id']);
-                    if ($product) {
-                        // $getDiscount = 0;
-                        // if ($product->discount_to && Carbon::parse($product->discount_to)->isFuture()) {
-                        //     $getDiscount = $product->discount;
-                        // }
-                        // $price_final =  $product->sell_price === $orderItem['price'] ? $product->sell_price : $orderItem['price'];
-                        $price_sell = $product->sell_price;
-                        $price_edit = $orderItem['price'];
 
-                        $price_final = $price_edit ? $price_edit : $price_sell;
+                $selectedProducts = collect($items)->filter(fn($item) => !empty($item['product_id']) && !empty($item['quantity']));
 
-                        // Log::info('>> price_final: ' . $price_final . ' ,price_sell: ' . $price_sell . ' ,price_edit: ' . $price_edit);
+                // Log::info('>> All items: ' . json_encode($items));
+                Log::info('>> All items Selected: ' . json_encode($selectedProducts));
+                $prices = Product::find($selectedProducts->pluck('product_id'))->pluck('sell_price', 'id');
+                Log::info('>> All prices: ' . json_encode($prices));
 
-                        // $total += ((($product->price + $product->vat) - $getDiscount) * $orderItem['qty']);
-                        $total_price += $price_final * $orderItem['quantity'];
-                        // $discount += ($getDiscount * $orderItem['qty']);
-                        // $vat +=  ($product->vat * $orderItem['qty']);
-                    }
-                }
-                $set('total_price', $total_price);
+                $subtotal = $selectedProducts->reduce(function ($subtotal, $product) use ($prices) {
+                    Log::info('>> Subtotal: ' . $subtotal);
+                    Log::info('>> Product in reduce: ' . $product['product_id']);
+                    Log::info('>> Price in product: ' . $product['price']);
+                    Log::info('>> Price : ' . $prices[$product['product_id']]);
+                    $price_final = $product['price'] ? $product['price'] : $prices[$product['product_id']];
+                    return $subtotal + ($price_final * $product['quantity']);
+                }, 0);
+                Log::info('>> Subtotal: ' . $subtotal);
+                $set('total_price', $subtotal);
+                // $set('total', $subtotal + ($subtotal * ($get('taxes') / 100)));
+
+
+                // $amount = 0;
+                // // $discount = 0;
+                // // $vat = 0;
+                // foreach ($items as $orderItem) {
+
+                //     $product = Product::find($orderItem['product_id']);
+                //     if ($product) {
+                //         // old
+                //         // $price_sell = $product->sell_price;
+                //         // $price_edit = $orderItem['price'];
+                //         // $price_final = $price_edit ? $price_edit : $price_sell;
+                //         // Log::info('>> price_sell: ' . $price_sell . ' ,price_edit: ' . $price_edit . ', total :' . $price_sell * $orderItem['quantity']);
+                //         // $amount += $orderItem['total'];
+                //         // Log::info('>> amount: ' . $amount);
+                //         // // $total += ((($product->price + $product->vat) - $getDiscount) * $orderItem['qty']);
+                //         // $total_price +=  $price_sell * $orderItem['quantity'];
+
+                //         // check state of product is change
+                //         // if ($item_price !== $product->sell_price) {
+                //         //     $set('price', $product->sell_price);
+                //         //     $set('total', $product->sell_price * $orderItem['quantity']);
+                //         // }
+                //         // new
+                //         // if($get('product_id') == $orderItem['product_id']) {
+
+                //         // }
+
+                //         // nếu giá trước khi thay đổi trùng với sp => update giá
+                //         // ngược lại lấy giá trong db
+                //         // Log::info('>> Product: ' . json_encode($product));
+                //         // Log::info('>> State Product_id: ' . $get('product_id'));
+
+                //         //
+                //         $qty = $orderItem['quantity'];
+                //         $item_price = $orderItem['price'];
+                //         $state_price = $get('price');
+                //         // Log::info('>> qty: ' . $qty . ' ,price: ' . $item_price);
+                //         // Log::info('>> state_price: ' . $state_price);
+
+                //         $sell_price = $product->sell_price;
+                //         // Log::info('>> item_price: ' . $item_price . ' ,product->sell_price: ' . $product->sell_price);
+
+                //         if ($item_price === null) {
+                //             $total_item = $qty * $sell_price;
+                //         }
+                //         // nếu sản phẩm k thay đổi => đổi giá => update lại giá sell
+                //         elseif ($item_price !== $product->sell_price) {
+                //             // $set('price', $product->sell_price);
+                //             // $set('total', $product->sell_price * $qty);
+                //             // Log::info('>>$state_price !== $product->sell_price || Change price: ' . $product->sell_price);
+                //             $total_item = $qty * $item_price;
+                //         } else {
+                //             // Log::info('No changes price');
+                //             $total_item = $qty * $sell_price;
+                //         }
+
+                //         $real_price = $item_price ? $item_price : $sell_price;
+                //         // $total_item = $qty * $real_price;
+                //         // Log::info('>> total_item: ' . $total_item);
+                //         $total_price += $total_item;
+                //         // Log::info('>> total_price: ' . $total_price);
+                //     }
+                // }
+                // $set('total_price', $total_price);
                 // $set('discount', $discount);
                 // $set('vat', $vat);
             })
@@ -608,5 +698,51 @@ class OrderResource extends Resource
                 ->label(__('shop/order.monthly_orders'))
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('created_at', '>=', now()->subDays(30))),
         ];
+    }
+
+    public function resetField(Forms\Set $set, string $field): void
+    {
+        $set($field, null);
+    }
+
+    public static function amount(Forms\Set $set, Forms\Get $get)
+    {
+        $items = $get('items');
+        $total_price = 0;
+        if ($items) {
+
+            foreach ($items as $orderItem) {
+                $product = Product::find($orderItem['product_id']);
+                if ($product) {
+                    $price_sell = $product->sell_price;
+                    $price_edit = $orderItem['price'];
+                    $price_final = $price_edit ? $price_edit : $price_sell;
+                    Log::info('>> price_final: ' . $price_final . ' ,price_sell: ' . $price_sell . ' ,price_edit: ' . $price_edit);
+
+                    $total_price += $price_final * $orderItem['quantity'];
+                }
+            }
+        }
+
+        $set('total_price', $total_price);
+    }
+
+    // This function updates totals based on the selected products and quantities
+    public static function updateTotals(Forms\Get $get, Forms\Set $set): void
+    {
+        // Retrieve all selected products and remove empty rows
+        $selectedProducts = collect($get('ỉtems'))->filter(fn($item) => !empty($item['product_id']) && !empty($item['quantity']));
+
+        // Retrieve prices for all selected products
+        $prices = Product::find($selectedProducts->pluck('product_id'))->pluck('price', 'id');
+
+        // Calculate subtotal based on the selected products and quantities
+        $subtotal = $selectedProducts->reduce(function ($subtotal, $product) use ($prices) {
+            return $subtotal + ($prices[$product['product_id']] * $product['quantity']);
+        }, 0);
+
+        // Update the state with the new values
+        $set('subtotal', number_format($subtotal, 2, '.', ''));
+        $set('total', number_format($subtotal + ($subtotal * ($get('taxes') / 100)), 2, '.', ''));
     }
 }
