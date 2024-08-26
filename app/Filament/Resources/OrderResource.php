@@ -95,6 +95,34 @@ class OrderResource extends Resource
                                 ->modalSubmitActionLabel(__('shop/order.create_customer')),
                         ])
                         ->schema([
+                            Forms\Components\Fieldset::make()
+                                ->relationship('customer')
+                                ->live()
+                                ->schema([
+                                    TextInput::make('name')
+                                        ->label(__('shop/order.customer_name'))
+                                        // ->disabled()
+                                        ->live()
+                                        ->readonly()
+                                        ->suffixAction(
+                                            Forms\Components\Actions\Action::make('copy')
+                                                ->icon('heroicon-s-clipboard-document-check')
+                                                ->action(function ($livewire, $state) {
+                                                    $livewire->js(
+                                                        'window.navigator.clipboard.writeText("' . $state . '");
+                                                            $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+                                                    );
+                                                })
+                                        )
+                                        ->maxLength(255)
+                                        ->columnSpan('full'),
+                                ])
+                                // ->label(__('shop/order.customer_name_1'))
+                                ->hidden(
+                                    function (Forms\Get $get, Forms\Set $set, Order $order) {
+                                        return !$order->exists && $get('customer_id') === null;
+                                    }
+                                ),
                             Forms\Components\Select::make('customer_id')
                                 ->label(__('shop/order.customer_phone_check'))
                                 ->relationship('customer', 'phone')
@@ -109,6 +137,8 @@ class OrderResource extends Resource
                                         $set('customer_name', null);
                                     } else {
                                         $set('customer_name', $customer->name);
+                                        $set('customer_name_info.name', $customer->name);
+                                        $set('name', $customer->name);
                                     }
 
                                     // Log::info("stage: " . $state);
@@ -171,13 +201,15 @@ class OrderResource extends Resource
                                 ->label(__('shop/order.customer_name'))
                                 ->reactive()
                                 // ->required()
-                                // ->hidden(
-                                //     function (Forms\Get $get, Forms\Set $set, Order $order) {
-                                //         // Log::info('customer_id: ' . $get('customer_id'));
-                                //         $customer = Customer::where('id', $get('customer_id'))->first();
-                                //         return $customer !== null && $get('customer_id') !== null;
-                                //     }
-                                // )
+                                ->hidden(
+                                    function (Forms\Get $get, Forms\Set $set, Order $order) {
+                                        // Log::info('customer_id: ' . $get('customer_id'));
+                                        // fn(Order $order) => $order->exists;
+                                        // $customer = Customer::where('id', $get('customer_id'))->first();
+                                        // Order::where('id', $order->id)->exists();
+                                        return $order->exists;
+                                    }
+                                )
                                 ->suffixAction(
                                     Forms\Components\Actions\Action::make('copy')
                                         ->icon('heroicon-s-clipboard-document-check')
@@ -189,6 +221,7 @@ class OrderResource extends Resource
                                         })
                                 )
                                 ->maxLength(255),
+
                             Forms\Components\Select::make('bonus_id')
                                 ->label(__('shop/order.bonus'))
                                 ->relationship('bonus', 'name')
