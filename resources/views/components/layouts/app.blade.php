@@ -36,7 +36,7 @@
                         <li class="">
                             <a class="font-semibold text-black inline-block no-underline hover:text-orange-600 py-2"
                                 href="/admin">
-                                Admin TEST CICD 5th
+                                Admin TEST CICD6
                             </a>
                         </li>
                         {{-- <li><a class="inline-block no-underline hover:text-black hover:underline py-2 px-4"
