@@ -21,7 +21,6 @@
 
 //     // protected static ?string $navigationParentItem = 'Products';
 
-
 //     protected static ?string $model = Category::class;
 
 //     protected static ?string $navigationIcon = 'heroicon-o-adjustments-horizontal';

@@ -3,10 +3,8 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CustomerResource\Pages;
-use App\Filament\Resources\CustomerResource\RelationManagers;
 use App\Models\Customer;
 use Filament\Forms;
-use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -29,6 +27,7 @@ class CustomerResource extends Resource
     {
         return __('shop/customer.count_number_customers');
     }
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();

@@ -29,9 +29,8 @@ class AppServiceProvider extends ServiceProvider
                 ->labels([
                     'vi' => 'Tiếng Việt',
                     'en' => 'English',
-                ])
-                // ->visible(outsidePanels: true)
-            ; // also accepts a closure
+                ]);
+            // ->visible(outsidePanels: true)// also accepts a closure
         });
 
         Builder::macro('whereLike', function ($attributes, string $searchTerm) {

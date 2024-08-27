@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Brand;
-use App\Models\Category;
 use App\Traits\Search;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -34,15 +32,21 @@ class Product extends Model
         'sell_price',
         'description',
         'image',
-        'expiry_date',
+        'expiry',
     ];
+
     public function scopeSearch(Builder $query, string $search = ''): void
     {
         $query->where('product_title', 'like', '%' . $search . '%');
     }
     // protected $casts = [
-    //     'expiry_date' => 'date:dd/mm/yyyy',
+    //     'expiry' => 'date:dd/mm/yyyy',
     // ];
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
+    }
 
     /** @return BelongsTo<Brand,self> */
     public function brand(): BelongsTo
@@ -56,19 +60,18 @@ class Product extends Model
         return $this->belongsToMany(Category::class)->withTimestamps();
     }
 
-
     public function getUrlImage()
     {
-        if(strpos($this->image, 'http') === 0 || strpos($this->image, 'https') === 0) {
+        if (strpos($this->image, 'http') === 0 || strpos($this->image, 'https') === 0) {
             return $this->image;
-        }else {
+        } else {
             return asset('storage/' . $this->image);
         }
     }
 
     public function formatPrice()
     {
-        return Number::format($this->sell_price , locale:'vi');
+        return Number::format($this->sell_price, locale: 'vi');
     }
 
     public function getExpiryDateAttribute($value)

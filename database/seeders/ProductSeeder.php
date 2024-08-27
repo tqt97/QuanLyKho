@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Product;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -25,7 +24,7 @@ class ProductSeeder extends Seeder
             ',
             'image' => '',
             'dosage' => 'Uống 4 viên/ ngày chia 2 lần sau ăn, tối đa không quá 8 viên/ ngày',
-            'expiry_date' => '2026-06-30',
+            'expiry' => '06-2026',
             'qty_per_product' => '180 viên',
             // 'original_price' => 100,
             'sell_price' => 590000,

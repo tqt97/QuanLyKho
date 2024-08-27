@@ -24,7 +24,6 @@ class OrderFactory extends Factory
             'user_id' => \App\Models\User::factory(),
             'product_id' => \App\Models\Product::factory(),
 
-
         ];
     }
 }

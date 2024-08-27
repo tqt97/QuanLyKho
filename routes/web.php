@@ -7,6 +7,4 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
-
-
 Route::get('/', Index::class);

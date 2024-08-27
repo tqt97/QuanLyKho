@@ -4,52 +4,44 @@ namespace App\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Tables;
-use Pages\ViewProduct;
 use App\Models\Product;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Support\RawJs;
 use Illuminate\Support\Str;
-use App\Imports\ProductImport;
-use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\MaxWidth;
-use Filament\Infolists\Components\Tabs;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Tables\Filters\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Infolists\Components\Section;
-use Filament\Infolists\Components\Fieldset;
-use Filament\Infolists\Components\TextEntry;
-
 use App\Filament\Resources\ProductResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
-use App\Filament\Resources\ProductResource\RelationManagers;
 use Schmeits\FilamentCharacterCounter\Forms\Components\Textarea;
 use Schmeits\FilamentCharacterCounter\Forms\Components\TextInput;
-use Filament\Tables\Filters\QueryBuilder\Constraints\DateConstraint;
 use Filament\Tables\Filters\QueryBuilder\Constraints\TextConstraint;
 use Filament\Tables\Filters\QueryBuilder\Constraints\NumberConstraint;
-use Filament\Tables\Filters\QueryBuilder\Constraints\BooleanConstraint;
 
 class ProductResource extends Resource
 {
     protected static ?string $navigationGroup = 'Cửa hàng';
+
     protected static ?string $model = Product::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
 
     protected static ?int $navigationSort = 3;
 
-
     public static function getNavigationBadgeTooltip(): ?string
     {
         return __('shop/product.product_count_numbers');
     }
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
     }
+
     protected static ?string $recordTitleAttribute = 'common_title';
 
     public static function getNavigationLabel(): string
@@ -101,16 +93,16 @@ class ProductResource extends Resource
                                     ->hint(__('shop/product.title_popular_helper'))
                                     ->required()
                                     ->maxLength(255)
-                                    //                 ->suffixAction(
-                                    //                     Forms\Components\Actions\Action::make('copy')
-                                    //                         ->icon('heroicon-s-clipboard-document-check')
-                                    //                         ->action(function ($livewire, $state) {
-                                    //                             $livewire->js(
-                                    //                                 'window.navigator.clipboard.writeText("' . $state . '");
-                                    // $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
-                                    //                             );
-                                    //                         })
-                                    //                 )
+                                    ->suffixAction(
+                                        Forms\Components\Actions\Action::make('copy')
+                                            ->icon('heroicon-s-clipboard-document-check')
+                                            ->action(function ($livewire, $state) {
+                                                $livewire->js(
+                                                    'window.navigator.clipboard.writeText("' . $state . '");
+                                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+                                                );
+                                            })
+                                    )
                                     ->columnSpan(1),
                                 TextInput::make('slug')
                                     ->label(__('shop/product.slug'))
@@ -136,16 +128,36 @@ class ProductResource extends Resource
                                 //                         })
                                 //                 )
                                 //                 ->columnSpan('full'),
-                                TextArea::make('dosage')
+                                TextInput::make('dosage')
                                     ->label(__('shop/product.dosage'))
-                                    ->rows(3)
+                                    // ->rows(3)
                                     ->required()
-                                    ->columnSpanFull(),
+                                    ->columnSpanFull()
+                                    ->suffixAction(
+                                        Forms\Components\Actions\Action::make('copy')
+                                            ->icon('heroicon-s-clipboard-document-check')
+                                            ->action(function ($livewire, $state) {
+                                                $livewire->js(
+                                                    'window.navigator.clipboard.writeText("' . $state . '");
+                                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+                                                );
+                                            })
+                                    ),
 
-                                TextArea::make('description')
+                                TextInput::make('description')
                                     ->label(__('shop/product.description'))
-                                    ->rows(5)
+                                    // ->rows(5)
                                     // ->cols(5)
+                                    ->suffixAction(
+                                        Forms\Components\Actions\Action::make('copy')
+                                            ->icon('heroicon-s-clipboard-document-check')
+                                            ->action(function ($livewire, $state) {
+                                                $livewire->js(
+                                                    'window.navigator.clipboard.writeText("' . $state . '");
+                                    $tooltip("' . __('Copied to clipboard') . '", { timeout: 1500 });'
+                                                );
+                                            })
+                                    )
                                     ->columnSpan('full'),
                             ])->columns(2),
                         // Forms\Components\Tabs\Tab::make('SEO')
@@ -163,7 +175,6 @@ class ProductResource extends Resource
 
                     ->columnSpan(['lg' => 2]),
 
-
                 Forms\Components\Group::make()
                     ->schema([
                         Forms\Components\Section::make()
@@ -177,8 +188,8 @@ class ProductResource extends Resource
                                     // ->fetchFileInformation(false)
                                     ->optimize('webp')
                                     ->imageResizeMode('cover')
-                                    ->imageCropAspectRatio('9:10')
-                                    ->imageResizeTargetWidth('540')
+                                    ->imageCropAspectRatio('1:1')
+                                    ->imageResizeTargetWidth('600')
                                     ->imageResizeTargetHeight('600')
                                     // ->panelLayout('grid')
                                     // ->resize(50)
@@ -191,16 +202,16 @@ class ProductResource extends Resource
                                     ->label(__('shop/product.original_price'))
                                     ->numeric()
                                     ->rules(['regex:/^\d{1,6}(\.\d{0,2})?$/'])
-                                    // ->suffix('vnd')
-                                    ->suffixIcon('heroicon-m-currency-dollar')
+                                    ->suffix('₫')
+                                    ->mask(moneyMask())
                                     ->columnSpan(1),
 
                                 TextInput::make('sell_price')
                                     ->label(__('shop/product.sell_price'))
                                     ->numeric()
                                     ->rules(['regex:/^\d{1,6}(\.\d{0,2})?$/'])
-                                    ->suffixIcon('heroicon-m-currency-dollar')
-                                    // ->suffix('vnd')
+                                    ->suffix('₫')
+                                    ->mask(moneyMask())
                                     ->required()->columnSpan(1),
                                 TextInput::make('qty_per_product')
                                     ->label(__('shop/product.quantity_per_pack'))
@@ -208,8 +219,8 @@ class ProductResource extends Resource
                                     ->characterLimit(255)
                                     ->required()
                                     ->columnSpan(1),
-                                TextInput::make('expiry_date')
-                                    ->label(__('shop/product.expiry_date'))
+                                TextInput::make('expiry')
+                                    ->label(__('shop/product.expiry'))
                                     ->suffixIcon('heroicon-m-calendar')
                                     // ->format('d/m/Y')
                                     // ->displayFormat('d/m/Y')
@@ -238,29 +249,35 @@ class ProductResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('product_title')
                     ->label(__('shop/product.title_product'))
+                    ->description(fn(Product $record): string => 'Số lượng: ' . $record->qty_per_product . ' - Liều dùng: ' . $record->dosage)
+                    // ->limit(50)
+                    ->wrap()
                     ->copyable()
                     ->searchable(isIndividual: true)
+                    ->words(10)
+                    ->wrap()
                     ->sortable(),
                 // Tables\Columns\TextColumn::make('title_sell')
                 //     ->label(__('shop/product.title_product'))
                 //     ->searchable(isIndividual: true)
                 //     ->sortable(),
-                Tables\Columns\TextColumn::make('expiry_date')
-                    ->label(__('shop/product.expiry_date'))
-                    // ->date('m/Y')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('qty_per_product')
-                    ->label(__('shop/product.quantity_per_pack'))
-                    ->numeric()
-                    ->sortable(),
-                // Tables\Columns\TextColumn::make('original_price')
-                //     ->label(__('shop/product.price'))
-                //     ->money('vnd')
-                //     ->sortable(),
                 Tables\Columns\TextColumn::make('sell_price')
                     ->label(__('shop/product.sell_price'))
                     ->money('vnd')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('expiry')
+                    ->label(__('shop/product.expiry'))
+                    // ->date('m/Y')
+                    ->sortable(),
+                // Tables\Columns\TextColumn::make('qty_per_product')
+                //     ->label(__('shop/product.quantity_per_pack'))
+                //     ->numeric()
+                //     ->sortable(),
+                // Tables\Columns\TextColumn::make('original_price')
+                //     ->label(__('shop/product.price'))
+                //     ->money('vnd')
+                //     ->sortable(),
+
                 // Tables\Columns\TextColumn::make('quantity')
                 //     ->numeric()
                 //     ->sortable(),
@@ -269,94 +286,28 @@ class ProductResource extends Resource
 
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->label(__('shop/product.deleted_at'))
-                    ->dateTime()
+                    ->dateTime('d-m-Y H:i:s')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('shop/product.created_at'))
-                    ->dateTime()
+                    ->dateTime('d-m-Y H:i:s')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label(__('shop/product.updated_at'))
-                    ->dateTime()
+                    ->dateTime('d-m-Y H:i:s')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters(
                 [
-                    // Tables\Filters\TrashedFilter::make(),
-                    // Tables\Filters\Filter::make('created_from')
-                    //     ->form([
-                    //         Forms\Components\DatePicker::make('created_from')->label(__('shop/product.created_from')),
-                    //     ])
-                    //     ->query(function (Builder $query, array $data): Builder {
-                    //         return $query
-                    //             ->when(
-                    //                 $data['created_from'],
-                    //                 fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
-                    //             );
-                    //     }),
-                    // Tables\Filters\Filter::make('created_until')
-                    //     ->form([
-                    //         Forms\Components\DatePicker::make('created_until')->label(__('shop/product.created_until')),
-                    //     ])
-                    //     ->query(function (Builder $query, array $data): Builder {
-                    //         return $query
-                    //             ->when(
-                    //                 $data['created_until'],
-                    //                 fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
-                    //             );
-                    //     })->default(now()),
-
-                    // Tables\Filters\Filter::make('price')
-                    //     ->form([
-                    //         Forms\Components\DatePicker::make('price')->label(__('shop/product.price_from')),
-                    //     ])
-                    //     ->query(function (Builder $query, array $data): Builder {
-                    //         return $query
-                    //             ->when(
-                    //                 $data['price'],
-                    //                 fn(Builder $query, $price): Builder => $query->whereDate('price', '>=', $price),
-                    //             );
-                    //     }),
-                    // Tables\Filters\Filter::make('price')->label(__('shop/product._or'))
-                    //     ->form([
-                    //         Forms\Components\TextInput::make('price')->label(__('shop/product.price_until')),
-                    //     ])
-                    //     ->query(function (Builder $query, array $data): Builder {
-                    //         return $query
-                    //             ->when(
-                    //                 $data['price'],
-                    //                 fn(Builder $query, $price): Builder => $query->whereDate('price', '<=', $price),
-                    //             );
-                    //     }),
-                    // Tables\Filters\Filter::make('price')
-                    //     ->form([
-                    //         TextInput::make('price'),
-                    //     ])
-                    //     ->query(function (Builder $query, array $data): Builder {
-                    //         return $query
-                    //             ->when(
-                    //                 $data['price'],
-                    //                 fn(Builder $query, $price): Builder => $query->where('price', $price),
-                    //             )
-                    //             ->when(
-                    //                 $data['price'],
-                    //                 fn(Builder $query, $price): Builder => $query->where('price', '>=', $price),
-                    //             )
-                    //             ->when(
-                    //                 $data['price'],
-                    //                 fn(Builder $query, $price): Builder => $query->where('price', '<=', $price),
-                    //             );
-                    //     }),
-
                     QueryBuilder::make()
                         ->constraints([
                             TextConstraint::make('title_popular')->label(__('shop/product.title_popular'))->icon('heroicon-o-cube'),
                             TextConstraint::make('title_product')->label(__('shop/product.title_product'))->icon('heroicon-o-cube'),
                             NumberConstraint::make('price')->label(__('shop/product.price'))->icon('heroicon-o-currency-dollar'),
-                        ])
+                        ]),
 
                 ],
                 // layout: Tables\Enums\FiltersLayout::AboveContent
@@ -378,12 +329,11 @@ class ProductResource extends Resource
             ])
             ->recordUrl(null)
             ->recordAction(Tables\Actions\ViewAction::class)
-            ->defaultSort('created_at', 'desc')
-            // ->defaultGroup('title_popular')
-            // ->recordUrl(
-            //     fn(Model $record): string => Pages\ViewProduct::getUrl([$record->id]),
-            // )
-        ;
+            ->defaultSort('created_at', 'desc');
+        // ->defaultGroup('title_popular')
+        // ->recordUrl(
+        //     fn(Model $record): string => Pages\ViewProduct::getUrl([$record->id]),
+        // )
     }
 
     public static function getRelations(): array
@@ -415,33 +365,4 @@ class ProductResource extends Resource
     {
         return ['product_title', 'common_title'];
     }
-
-    // public static function infolist(Infolist $infolist): Infolist
-    // {
-    //     return $infolist->schema([
-    //         Section::make('Post')
-    //             ->schema([
-    //                 Fieldset::make('General')
-    //                     ->schema([
-    //                         TextEntry::make('title_popular'),
-    //                         TextEntry::make('title_product'),
-    //                         // TextEntry::make('description'),
-    //                     ]),
-    //                 Fieldset::make('Publish Information')
-    //                     ->schema([
-    //                         // TextEntry::make('status')
-    //                         // ->badge()->color(function ($state) {
-    //                         //     return $state->getColor();
-    //                     ]),
-    //                 Fieldset::make('Description')
-    //                     ->schema([
-    //                         TextEntry::make('content')
-    //                             ->html()
-    //                             ->columnSpanFull(),
-    //                     ]),
-    //             ]),
-    //     ]);
-    // }
-
-
 }
