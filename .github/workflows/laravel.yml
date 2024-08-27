@@ -2,9 +2,11 @@ name: Laravel
 
 on:
   push:
-    branches: [ "Deploy" ]
+    branches:
+      - Deploy
   pull_request:
-    branches: [ "Deploy" ]
+    branches:
+      - Deploy
 
 jobs:
   deploy:
