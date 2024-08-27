@@ -19,4 +19,4 @@ jobs:
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: "cd /var/www/html && ./.scripts/deploy.sh"
+          script: "cd /var/www/QuanLyKho && ./.scripts/deploy.sh"
