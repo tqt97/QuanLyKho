@@ -11,45 +11,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    - name: Setup SSH
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H "root@103.161.172.174" >> ~/.ssh/known_hosts
-
-    - name: Deploy to VPS via rsync
-      run: |
-        rsync -avz --exclude='.git' --exclude='node_modules' \
-        --delete-after ./ root@103.161.172.174:/var/www/QuanLyKho
-
-    - name: Install Composer dependencies
-      run: |
-        ssh your-username@your-server-ip "
-        cd /var/www/QuanLyKho &&
-        composer install --no-dev --prefer-dist --optimize-autoloader
-        "
-
-    - name: Run Laravel Commands
-      run: |
-        ssh root@103.161.172.174 "
-        cd /var/www/QuanLyKho &&
-        php artisan migrate --step &&
-        php artisan config:cache &&
-        php artisan route:cache &&
-        php artisan view:cache &&
-        npm install &&
-        npm run build &&
-        php artisan optimize:clear &&
-        php artisan optimize &&
-        "
-
-    - name: Restart PHP and Web Server
-      run: |
-        ssh root@103.161.172.174 "
-        sudo systemctl restart php8.2-fpm &&
-        sudo systemctl restart nginx
-        "
+      - uses: actions/checkout@v2
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          port: ${{ secrets.PORT }}
+          key: ${{ secrets.SSHKEY }}
+          script: "cd /var/www/html && ./.scripts/deploy.sh"
