@@ -26,8 +26,8 @@
     <meta property="og:type" content="website">
 
     {{-- twitter --}}
-    <meta name="twitter:title" content="BÁCH HÓA TL HCM- THẾ GIỚI HÀNG NHẬP">
-    <meta name="twitter:description" content="BÁCH HÓA TL HCM- THẾ GIỚI HÀNG NHẬP">
+    <meta name="twitter:title" content="BÁCH HÓA TL HCM - THẾ GIỚI HÀNG NHẬP">
+    <meta name="twitter:description" content="BÁCH HÓA TL HCM - THẾ GIỚI HÀNG NHẬP">
     <meta name="twitter:image" content="{{ asset('images/og-image-1200x630') }}">
     <meta name="twitter:card" content="summary_large_image">
 
