@@ -2,27 +2,30 @@
 
 namespace App\Filament\Resources\ProductResource\Pages;
 
-use App\Filament\Resources\ProductResource;
-use App\Filament\Resources\ProductResource\Widgets\ProductsOverview;
-use App\Imports\ProductImport;
-use AymanAlhattami\FilamentContextMenu\Actions\GoBackAction;
-use AymanAlhattami\FilamentContextMenu\Actions\GoForwardAction;
-use AymanAlhattami\FilamentContextMenu\Actions\RefreshAction;
-use AymanAlhattami\FilamentContextMenu\Traits\PageHasContextMenu;
 use Filament\Actions;
-use Filament\Forms\Components\FileUpload;
-use Filament\Notifications\Notification;
+use App\Imports\ProductImport;
 use Filament\Pages\Actions\Action;
-use Filament\Pages\Concerns\ExposesTableToWidgets;
+use Maatwebsite\Excel\Facades\Excel;
 use Filament\Resources\Components\Tab;
+use Filament\Notifications\Notification;
+use Filament\Forms\Components\FileUpload;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
-use Maatwebsite\Excel\Facades\Excel;
+use App\Filament\Resources\ProductResource;
+use Filament\Pages\Concerns\ExposesTableToWidgets;
+use JoseEspinal\RecordNavigation\Traits\HasRecordsList;
+use AymanAlhattami\FilamentContextMenu\Actions\GoBackAction;
+use AymanAlhattami\FilamentContextMenu\Actions\RefreshAction;
+use AymanAlhattami\FilamentContextMenu\Actions\GoForwardAction;
+use AymanAlhattami\FilamentContextMenu\Traits\PageHasContextMenu;
+use App\Filament\Resources\ProductResource\Widgets\ProductsOverview;
 
 class ListProducts extends ListRecords
 {
     use ExposesTableToWidgets;
     use PageHasContextMenu;
+    use HasRecordsList;
+
 
     protected static string $resource = ProductResource::class;
 

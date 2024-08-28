@@ -12,6 +12,7 @@
         "calebporzio/sushi": "^2.5",
         "filament/filament": "^3.2",
         "flowframe/laravel-trend": "^0.2.0",
+        "josespinal/filament-record-navigation": "^2.0",
         "joshembling/image-optimizer": "^1.4",
         "lara-zeus/quantity": "^1.0",
         "laravel/framework": "^11.9",

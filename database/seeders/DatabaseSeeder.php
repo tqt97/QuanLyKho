@@ -20,12 +20,12 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
         // Category::factory(10)->create();
-        Product::factory(50)->create();
+        // Product::factory(50)->create();
         // Order::factory(10)->create();
         // Customer::factory(10)->create();
 
-        Customer::factory(10)->create();
-        Bonus::factory(10)->create();
+        Customer::factory(2)->create();
+        Bonus::factory(2)->create();
 
         User::factory()->create([
             'name' => 'TuanTQ',
@@ -33,9 +33,9 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('12341234'),
         ]);
 
-        $this->call([
-            ProductSeeder::class,
-        ]);
+        // $this->call([
+        //     ProductSeeder::class,
+        // ]);
 
     }
 }

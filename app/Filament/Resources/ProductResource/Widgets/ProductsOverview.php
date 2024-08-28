@@ -32,14 +32,14 @@ class ProductsOverview extends BaseWidget
         $most_expensive_product = Product::where('sell_price', $id_price)->first() ?? null;
 
         return [
-            Stat::make('total_products', $total_products)
+            Stat::make('total_products', $total_products ?? 0)
                 ->label(__('shop/product.total_products')),
             Stat::make('most_popular_product', $popular_products['common_title'] ?? null)
                 ->label(__('shop/product.most_popular_product'))
                 ->description($popular_products['product_title'] ?? null),
-            Stat::make('Average time on page', $most_expensive_product['common_title'])
+            Stat::make('Average time on page', $most_expensive_product['common_title'] ?? null)
                 ->label(__('shop/product.most_expensive_product'))
-                ->description(format_price($most_expensive_product['sell_price']).' ₫'),
+                ->description(format_price($most_expensive_product['sell_price'] ?? 0).' ₫'),
         ];
     }
 }
