@@ -71,7 +71,7 @@ class Product extends Model
 
     public function formatPrice()
     {
-        return Number::format($this->sell_price, locale: 'vi');
+        return Number::format($this->sell_price ?? 0, locale: 'vi');
     }
 
     public function getExpiryDateAttribute($value)
