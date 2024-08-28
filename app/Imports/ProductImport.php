@@ -21,7 +21,7 @@ class ProductImport implements ToModel, WithHeadingRow
         $common_title = $row['common_title'];
         $product_title = $row['product_title'];
         $slug = $common_title ? Str::slug($common_title) : Str::slug($product_title);
-        $slug .= '-'.rand(1, 9);
+        $slug .= '-'.rand(1, 99);
         return new Product([
             'common_title' => $common_title,
             'product_title' => $product_title,
