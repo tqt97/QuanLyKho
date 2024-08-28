@@ -21,7 +21,7 @@
     {{-- og share --}}
     <meta property="og:title" content="BÁCH HÓA TL HCM- THẾ GIỚI HÀNG NHẬP">
     <meta property="og:description" content="BÁCH HÓA TL HCM- THẾ GIỚI HÀNG NHẬP">
-    <meta property="og:image" content="{{ asset('images/og-image-1200x630') }}">
+    <meta property="og:image" content="{{ asset('images/og-image-1200x630.png') }}">
     <meta property="og:url" content="{{ Request::url() }}">
     <meta property="og:type" content="website">
 
