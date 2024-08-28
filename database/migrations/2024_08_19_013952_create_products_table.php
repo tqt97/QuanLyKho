@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
 
             // title
-            $table->string('common_title');
-            $table->string('product_title');
+            $table->string('common_title')->nullable();
+            $table->string('product_title')->nullable();
             // $table->string('sell_title');
             $table->string('slug')->unique();
 
@@ -30,7 +30,7 @@ return new class extends Migration
 
             // price
             $table->double('original_price')->nullable();
-            $table->double('sell_price');
+            $table->double('sell_price')->nullable();
 
             $table->softDeletes();
             $table->timestamps();
