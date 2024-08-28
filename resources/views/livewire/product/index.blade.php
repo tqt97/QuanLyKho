@@ -51,7 +51,7 @@
         </div>
         <div class="relative max-w-7xl mx-auto rounded-lg transition duration-300" x-data="searchComponent()" x-init="init()">
             <input x-ref="searchInput"
-                class="appearance-none  focuc:bg-white focus:py-2 hover:bg-white border-2 pl-12 border-[#c11f27] hover:border-[#c11f27] transition-colors
+                class="appearance-none bg-white focus:py-2 border-2 pl-12 border-[#c11f27] hover:border-[#c11f27] transition-colors
                 rounded-md w-full px-3 text-black leading-tight focus:outline-none  focus:shadow-outline" :class="top ? 'py-2' : 'py-[0.4rem]'"
                 wire:model.live.debounce.300ms="search" placeholder="{{ __('frontend/layout.search_placeholder') }} " />
 

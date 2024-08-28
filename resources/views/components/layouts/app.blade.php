@@ -40,7 +40,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="bg-gray-50 text-gray-600 work-sans leading-normal text-base tracking-normal">
+<body class="bg-white text-gray-600 work-sans leading-normal text-base tracking-normal">
 
     <x-alert />
 

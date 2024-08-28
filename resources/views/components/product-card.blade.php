@@ -1,6 +1,6 @@
 {{-- @props(['product']) --}}
 
-<div class=" bg-white shadow-md rounded-xl duration-500 hover:shadow-2xl transition">
+<div class=" shadow-lg rounded-xl hover:shadow-2xl transition duration-300">
     <div>
         <img src="{{ $product->getUrlImage() }}" alt="{{ $product->product_title }}"
             class="h-auto w-full object-cover rounded-t-xl" />
