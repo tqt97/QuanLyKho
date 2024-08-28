@@ -39,7 +39,7 @@ class ProductsOverview extends BaseWidget
                 ->description($popular_products['product_title'] ?? null),
             Stat::make('Average time on page', $most_expensive_product['common_title'] ?? null)
                 ->label(__('shop/product.most_expensive_product'))
-                ->description(format_price($most_expensive_product['sell_price']).' ₫'),
+                ->description(format_price($most_expensive_product['sell_price'] ?? 0).' ₫'),
         ];
     }
 }
