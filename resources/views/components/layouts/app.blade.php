@@ -13,7 +13,7 @@
     <meta name="keywords" content="BachHoaTL, Bách Hóa TL HCM, BÁCH HÓA TL HCM, THẾ GIỚI HÀNG NHẬP">
     <meta name="description" content="BÁCH HÓA TL HCM- THẾ GIỚI HÀNG NHẬP">
     {{-- <title>{{ isset($title) ? $title . ' | ' : '' }}{{ config('app.name', 'Laravel') }}</title> --}}
-    <title>BÁCH HÓA TL HCM- THẾ GIỚI HÀNG NHẬP</title>
+    <title>BÁCH HÓA TL HCM - THẾ GIỚI HÀNG NHẬP | BACHHOATL</title>
 
     {{-- // favion --}}
     <link rel="shortcut icon" href="{{ asset('images/favicon-16x16.ico') }}" type="image/x-icon">
