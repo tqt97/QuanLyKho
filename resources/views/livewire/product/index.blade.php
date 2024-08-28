@@ -1,7 +1,7 @@
 <div class="relative min-h-screen bg-white rounded-l w-full">
 
     <div class="x-full mx-auto flex min-h-full flex-col">
-            <div class="sticky w-full mx-auto sticky1 top-0 bg-white z-10 lg:hidden block">
+            <div class="sticky w-full mx-auto  top-0 bg-white z-10 mt-10">
 
                 <div class="relative">
                     <input
@@ -42,8 +42,8 @@
                     @endif
                 </div>
             </div>
-        <div class="mx-auto flex w-full items-start gap-x-4 py-10">
-            <aside class="sticky top-0 hidden w-72 shrink-0 lg:block ">
+        <div class="mx-auto flex w-full items-start gap-x-4 py-10 mt-10">
+            {{-- <aside class="sticky top-0 hidden w-72 shrink-0 lg:block ">
                 <div class="relative1 max-w-7xl mx-auto sticky top-0 bg-white z-10">
 
                     <div class="relative">
@@ -86,9 +86,9 @@
                         @endif
                     </div>
                 </div>
-            </aside>
+            </aside> --}}
             <main class="flex-1">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:px-0 px-2">
+                <div class="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-6 md:px-0">
 
                     @if (count($products))
                         @foreach ($products as $product)
