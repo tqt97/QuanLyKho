@@ -189,8 +189,8 @@ class ProductResource extends Resource
                                     ->optimize('webp')
                                     ->imageResizeMode('cover')
                                     ->imageCropAspectRatio('1:1')
-                                    ->imageResizeTargetWidth('600')
-                                    ->imageResizeTargetHeight('600')
+                                    ->imageResizeTargetWidth('450')
+                                    ->imageResizeTargetHeight('450')
                                     // ->panelLayout('grid')
                                     // ->resize(50)
                                     ->image(),

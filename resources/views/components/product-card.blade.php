@@ -1,12 +1,12 @@
 {{-- @props(['product']) --}}
 
 <div class=" bg-white shadow-md rounded-xl duration-500 hover:shadow-2xl transition">
-    <a href="#" title="{{ $product->product_title }}">
+    <div>
         <img src="{{ $product->getUrlImage() }}" alt="{{ $product->product_title }}"
             class="h-auto w-full object-cover rounded-t-xl" />
         <div class="px-4 py-3 w-full">
             {{-- <span class="text-gray-400 mr-3 uppercase text-xs">Brand</span> --}}
-            <p class="text-2xl font-bold text-gray-900 truncate block mt-2">{{ $product->common_title }}</p>
+            <p class="text-2xl font-bold text-gray-900 truncate block mt-2 cursor-pointer">{{ $product->common_title }}</p>
             <p class="text-lg font-medium text-gray-900 truncate block mt-2 mb-2">{{ $product->product_title }}</p>
             <hr>
             <div class="flex items-center my-2">
@@ -41,5 +41,5 @@
                 {{ $product->description }}
             </div>
         </div>
-    </a>
+    </div>
 </div>

@@ -1,7 +1,7 @@
 <div class="relative min-h-screen bg-white rounded-l w-full">
 
     <div class="x-full mx-auto flex min-h-full flex-col">
-        <div class="sticky w-full px-2 mx-auto  top-0 bg-white z-10 md:mt-10">
+        <div class="sticky w-full mx-auto  top-0 bg-white z-10 md:mt-10">
             <div class="relative bg-[#FF2D20] rounded-lg p-1">
                 <input
                     class="appearance-none border-2 pl-12 border-gray-50 hover:border-[#FF2D20] transition-colors rounded-md w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none  focus:shadow-outline"
@@ -93,7 +93,7 @@
             </aside> --}}
 
                 <main class="flex-1">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 sm:grid-cols-2 gap-6 md:px-0">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 sm:grid-cols-2 gap-12 md:px-0">
 
                         @if (count($products))
                             @foreach ($products as $product)
