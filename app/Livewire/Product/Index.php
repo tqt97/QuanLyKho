@@ -53,7 +53,7 @@ class Index extends Component
     {
         $products = Product::orderBy('created_at', $this->sort)
             ->whereLike(['product_title', 'common_title'], $this->search)
-            ->paginate(9);
+            ->paginate(30);
 
         return view(
             'livewire.product.index',
