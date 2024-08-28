@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\Product;
+use Faker\Core\Uuid;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -21,7 +22,7 @@ class ProductImport implements ToModel, WithHeadingRow
         $common_title = $row['common_title'];
         $product_title = $row['product_title'];
         $slug = $common_title ? Str::slug($common_title) : Str::slug($product_title);
-        $slug .= '-'.rand(1, 99);
+        $slug .= '-'.uniqid();
         return new Product([
             'common_title' => $common_title,
             'product_title' => $product_title,
