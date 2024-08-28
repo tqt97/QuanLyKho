@@ -11,7 +11,7 @@
     <meta name="bingbot" content="index, follow">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="keywords" content="BachHoaTL, Bách Hóa TL HCM, BÁCH HÓA TL HCM, THẾ GIỚI HÀNG NHẬP">
-    <meta name="description" content="BÁCH HÓA TL HCM- THẾ GIỚI HÀNG NHẬP">
+    <meta name="description" content="BÁCH HÓA TL HCM - THẾ GIỚI HÀNG NHẬP">
     {{-- <title>{{ isset($title) ? $title . ' | ' : '' }}{{ config('app.name', 'Laravel') }}</title> --}}
     <title>BÁCH HÓA TL HCM - THẾ GIỚI HÀNG NHẬP | BACHHOATL</title>
 
