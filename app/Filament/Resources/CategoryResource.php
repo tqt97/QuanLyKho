@@ -55,6 +55,7 @@ class CategoryResource extends Resource
                                 ->label(__('shop/category.category_name'))
                                 ->required()
                                 ->maxLength(255)
+                                ->live(onBlur: true)
                                 ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
                                     if ($operation !== 'create') {
                                         return;

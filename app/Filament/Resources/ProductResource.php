@@ -237,6 +237,7 @@ class ProductResource extends Resource
                                             ->label(__('shop/category.category_parent'))
                                             ->preload()
                                             ->searchable()
+                                            ->live(onBlur: true)
                                             ->relationship('parent', 'name'),
                                         Forms\Components\TextInput::make('name')
                                             ->label(__('shop/category.category_name'))
