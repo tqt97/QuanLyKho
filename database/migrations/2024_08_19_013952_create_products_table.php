@@ -20,13 +20,17 @@ return new class extends Migration
             // $table->string('sell_title');
             $table->string('slug')->unique();
 
+            // category
+            $table->foreignId('category_id')->nullable()->constrained('categories')->cascadeOnDelete();
+
             // additional information
             $table->text('description')->nullable();
             $table->string('image')->nullable();
 
             $table->text('dosage')->nullable(); // lieu dung
+            $table->string('duration')->nullable(); // thoi gian su dung
             $table->string('expiry')->nullable(); // ngay het han
-            $table->string('qty_per_product')->nullable(); // so luong trong 1 goi
+            $table->string('unit')->nullable(); // don vi
 
             // price
             $table->double('original_price')->nullable();

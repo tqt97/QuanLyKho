@@ -27,12 +27,14 @@ class Product extends Model
         'product_title',
         'slug',
         'dosage',
-        'qty_per_product',
+        'unit',
+        'duration',
         'original_price',
         'sell_price',
         'description',
         'image',
         'expiry',
+        'category_id',
     ];
 
     public function scopeSearch(Builder $query, string $search = ''): void
@@ -54,24 +56,30 @@ class Product extends Model
         return $this->belongsTo(Brand::class);
     }
 
-    /** @return BelongsToMany<Category> */
-    public function categories(): BelongsToMany
+    /** @return BelongsTo<Category,self> */
+    public function category(): BelongsTo
     {
-        return $this->belongsToMany(Category::class)->withTimestamps();
+        return $this->belongsTo(Category::class);
     }
+
+    // /** @return BelongsToMany<Category> */
+    // public function categories(): BelongsToMany
+    // {
+    //     return $this->belongsToMany(Category::class)->withTimestamps();
+    // }
 
     public function getUrlImage()
     {
-        if (strpos($this->image, 'http') === 0 || strpos($this->image, 'https') === 0) {
-            return $this->image;
-        } else {
+        if ($this->image) {
             return asset('storage/' . $this->image);
         }
+
+        return asset('images/no-image.webp');
     }
 
     public function formatPrice()
     {
-        return Number::format($this->sell_price, locale: 'vi');
+        return Number::format($this->sell_price ?? 0, locale: 'vi');
     }
 
     public function getExpiryDateAttribute($value)

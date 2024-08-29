@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\Product;
+use Faker\Core\Uuid;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -18,14 +19,18 @@ class ProductImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         // dd($row);
+        $common_title = $row['common_title'];
+        $product_title = $row['product_title'];
+        $slug = $common_title ? Str::slug($common_title) : Str::slug($product_title);
+        $slug .= '-' . uniqid();
         return new Product([
-            'common_title' => $row['common_title'],
-            'product_title' => $row['product_title'],
-            'slug' => Str::slug($row['product_title']) . '-' . rand(1000, 9999),
+            'common_title' => $common_title,
+            'product_title' => $product_title,
+            'slug' => $slug,
             'description' => $row['description'],
             'dosage' => $row['dosage'],
             'expiry' => $row['expiry'],
-            'qty_per_product' => $row['qty_per_product'],
+            'unit' => $row['unit'],
             'original_price' => $row['original_price'],
             'sell_price' => $row['sell_price'],
             'image' => $row['image'],
