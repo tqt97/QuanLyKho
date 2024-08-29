@@ -62,11 +62,11 @@ class Product extends Model
 
     public function getUrlImage()
     {
-        if (strpos($this->image, 'http') === 0 || strpos($this->image, 'https') === 0) {
-            return $this->image;
-        } else {
+        if ($this->image) {
             return asset('storage/' . $this->image);
         }
+
+        return asset('images/no-image.webp');
     }
 
     public function formatPrice()
