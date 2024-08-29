@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Product;
+use App\Models\Category;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Support\RawJs;
@@ -226,6 +227,34 @@ class ProductResource extends Resource
                                 //     ->default(true),
 
 
+                                Forms\Components\Select::make('category_id')
+                                    ->label(__('shop/product.category'))
+                                    ->relationship('category', 'name')
+                                    ->preload()
+                                    ->searchable()
+                                    ->createOptionForm([
+                                        Forms\Components\Select::make('parent_id')
+                                            ->label(__('shop/category.category_parent'))
+                                            ->preload()
+                                            ->searchable()
+                                            ->relationship('parent', 'name'),
+                                        Forms\Components\TextInput::make('name')
+                                            ->label(__('shop/category.category_name'))
+                                            ->required()
+                                            ->maxLength(255)
+                                            ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+                                                if ($operation !== 'create') {
+                                                    return;
+                                                }
+
+                                                $set('slug', Str::slug($state));
+                                            }),
+                                        Forms\Components\TextInput::make('slug')
+                                            ->required()
+                                            ->maxLength(255)
+                                            ->unique(Category::class, 'slug', ignoreRecord: true),
+                                    ])
+                                    ->columnSpan(1),
 
                                 TextInput::make('expiry')
                                     ->label(__('shop/product.expiry'))

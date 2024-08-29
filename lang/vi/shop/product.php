@@ -50,4 +50,5 @@ return [
     'most_expensive_product' => 'Sản phẩm đắt nhất',
     'total_product_price' => 'Tổng tiền hàng',
     'duration' => 'Thời gian sử dụng',
+    'category' => 'Danh mục sản phẩm',
 ];

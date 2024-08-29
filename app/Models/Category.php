@@ -15,17 +15,17 @@ class Category extends Model
     protected $fillable = [
         'name',
         'slug',
-        'description',
+        // 'description',
         'parent_id',
-        'position',
-        'is_active',
-        'seo_title',
-        'seo_description',
+        // 'position',
+        // 'is_active',
+        // 'seo_title',
+        // 'seo_description',
     ];
 
-    protected $casts = [
-        'is_active' => 'boolean',
-    ];
+    // protected $casts = [
+    //     'is_active' => 'boolean',
+    // ];
 
     public function parent(): BelongsTo
     {
@@ -37,9 +37,14 @@ class Category extends Model
         return $this->hasMany(Category::class);
     }
 
-    public function products(): BelongsToMany
+    // public function products(): BelongsToMany
+    // {
+    //     return $this->belongsToMany(Product::class);
+    // }
+
+    public function products(): HasMany
     {
-        return $this->belongsToMany(Product::class);
+        return $this->hasMany(Product::class);
     }
 
     public function scopeActive($query)
