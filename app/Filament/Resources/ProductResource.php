@@ -201,17 +201,17 @@ class ProductResource extends Resource
                                 TextInput::make('original_price')
                                     ->label(__('shop/product.original_price'))
                                     ->numeric()
-                                    ->rules(['regex:/^\d{1,6}(\.\d{0,2})?$/'])
+                                    ->rules(['regex:/^\d{1,7}(\.\d{0,2})?$/'])
                                     ->suffix('₫')
-                                    ->mask(moneyMask())
+                                    // ->mask(moneyMask())
                                     ->columnSpan(1),
 
                                 TextInput::make('sell_price')
                                     ->label(__('shop/product.sell_price'))
                                     ->numeric()
-                                    ->rules(['regex:/^\d{1,6}(\.\d{0,2})?$/'])
+                                    ->rules(['regex:/^\d{1,7}(\.\d{0,2})?$/'])
                                     ->suffix('₫')
-                                    ->mask(moneyMask())
+                                    // ->mask(moneyMask())
                                     ->required()->columnSpan(1),
                                 TextInput::make('qty_per_product')
                                     ->label(__('shop/product.quantity_per_pack'))
@@ -246,6 +246,8 @@ class ProductResource extends Resource
                     ->label(__('shop/product.title_popular'))
                     // ->description(fn(Product $record): string => $record->dosage . ' - ' . $record->qty_per_product)
                     ->searchable(isIndividual: true)
+                    ->words(10)
+                    ->wrap()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('product_title')
                     ->label(__('shop/product.title_product'))
