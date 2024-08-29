@@ -17,7 +17,7 @@ class Index extends Component
     public Product $product;
 
     #[Url()]
-    public string $sort = 'asc';
+    public string $sort = 'desc';
 
     public function toggleSort()
     {
@@ -53,7 +53,8 @@ class Index extends Component
     {
         $products = Product::orderBy('created_at', $this->sort)
             ->whereLike(['product_title', 'common_title'], $this->search)
-            ->paginate(30);
+            ->orderBy('created_at', $this->sort)
+            ->simplePaginate(30);
 
         return view(
             'livewire.product.index',
