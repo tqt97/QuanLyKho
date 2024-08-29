@@ -26,12 +26,17 @@
             <div class="my-2">
                 <span class="mr-3 text-md text-black mt-2 mb-4">
                     <span class="font-semibold text-gray-800">Đơn vị:</span>
-                    {{ $product->qty_per_product }}
+                    {{ $product->unit }}
                 </span>
             </div>
             <div class="my-2 cp" x-clipboard.raw="{{ $product->dosage }}" title="Sao chép">
                 <span class="mr-3 text-md text-black mt-2 mb-2 ">
                     <span class="font-semibold text-gray-800">Liều dùng:</span> {{ $product->dosage }}
+                </span>
+            </div>
+            <div class="my-2">
+                <span class="mr-3 text-md text-black mt-2 mb-2 ">
+                    <span class="font-semibold text-gray-800">Thời gian sử dụng:</span> {{ $product->duration }}
                 </span>
             </div>
             <div class="my-2">

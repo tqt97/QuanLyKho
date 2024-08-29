@@ -22,7 +22,7 @@ class ProductImport implements ToModel, WithHeadingRow
         $common_title = $row['common_title'];
         $product_title = $row['product_title'];
         $slug = $common_title ? Str::slug($common_title) : Str::slug($product_title);
-        $slug .= '-'.uniqid();
+        $slug .= '-' . uniqid();
         return new Product([
             'common_title' => $common_title,
             'product_title' => $product_title,
@@ -30,7 +30,7 @@ class ProductImport implements ToModel, WithHeadingRow
             'description' => $row['description'],
             'dosage' => $row['dosage'],
             'expiry' => $row['expiry'],
-            'qty_per_product' => $row['qty_per_product'],
+            'unit' => $row['unit'],
             'original_price' => $row['original_price'],
             'sell_price' => $row['sell_price'],
             'image' => $row['image'],

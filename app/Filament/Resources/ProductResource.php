@@ -128,6 +128,32 @@ class ProductResource extends Resource
                                 //                         })
                                 //                 )
                                 //                 ->columnSpan('full'),
+                                TextInput::make('original_price')
+                                    ->label(__('shop/product.original_price'))
+                                    ->numeric()
+                                    ->rules(['regex:/^\d{1,7}(\.\d{0,2})?$/'])
+                                    ->suffix('₫')
+                                    // ->mask(moneyMask())
+                                    ->columnSpan(1),
+                                TextInput::make('sell_price')
+                                    ->label(__('shop/product.sell_price'))
+                                    ->numeric()
+                                    ->rules(['regex:/^\d{1,7}(\.\d{0,2})?$/'])
+                                    ->suffix('₫')
+                                    // ->mask(moneyMask())
+                                    ->required()->columnSpan(1),
+                                TextInput::make('unit')
+                                    ->label(__('shop/product.quantity_per_pack'))
+                                    ->hint(__('shop/product.quantity_per_pack_helper'))
+                                    ->characterLimit(255)
+                                    // ->required()
+                                    ->columnSpan(1),
+                                TextInput::make('duration')
+                                    ->label(__('shop/product.duration'))
+                                    // ->hint(__('shop/product.duration_helper'))
+                                    ->characterLimit(255)
+                                    // ->required()
+                                    ->columnSpan(1),
                                 TextInput::make('dosage')
                                     ->label(__('shop/product.dosage'))
                                     // ->rows(3)
@@ -198,27 +224,9 @@ class ProductResource extends Resource
                                 //     ->label(__('shop/product.is_visible'))
                                 //     ->helperText(__('shop/product.is_visible_helper'))
                                 //     ->default(true),
-                                TextInput::make('original_price')
-                                    ->label(__('shop/product.original_price'))
-                                    ->numeric()
-                                    ->rules(['regex:/^\d{1,7}(\.\d{0,2})?$/'])
-                                    ->suffix('₫')
-                                    // ->mask(moneyMask())
-                                    ->columnSpan(1),
 
-                                TextInput::make('sell_price')
-                                    ->label(__('shop/product.sell_price'))
-                                    ->numeric()
-                                    ->rules(['regex:/^\d{1,7}(\.\d{0,2})?$/'])
-                                    ->suffix('₫')
-                                    // ->mask(moneyMask())
-                                    ->required()->columnSpan(1),
-                                TextInput::make('qty_per_product')
-                                    ->label(__('shop/product.quantity_per_pack'))
-                                    ->hint(__('shop/product.quantity_per_pack_helper'))
-                                    ->characterLimit(255)
-                                    ->required()
-                                    ->columnSpan(1),
+
+
                                 TextInput::make('expiry')
                                     ->label(__('shop/product.expiry'))
                                     ->suffixIcon('heroicon-m-calendar')
@@ -244,14 +252,14 @@ class ProductResource extends Resource
                     ->square(),
                 Tables\Columns\TextColumn::make('common_title')
                     ->label(__('shop/product.title_popular'))
-                    // ->description(fn(Product $record): string => $record->dosage . ' - ' . $record->qty_per_product)
+                    // ->description(fn(Product $record): string => $record->dosage . ' - ' . $record->unit)
                     ->searchable(isIndividual: true)
                     ->words(10)
                     ->wrap()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('product_title')
                     ->label(__('shop/product.title_product'))
-                    ->description(fn(Product $record): string => 'Số lượng: ' . $record->qty_per_product . ' - Liều dùng: ' . $record->dosage)
+                    ->description(fn(Product $record): string => 'Số lượng: ' . $record->unit . ' - Liều dùng: ' . $record->dosage)
                     // ->limit(50)
                     ->wrap()
                     ->copyable()
@@ -271,7 +279,7 @@ class ProductResource extends Resource
                     ->label(__('shop/product.expiry'))
                     // ->date('m/Y')
                     ->sortable(),
-                // Tables\Columns\TextColumn::make('qty_per_product')
+                // Tables\Columns\TextColumn::make('unit')
                 //     ->label(__('shop/product.quantity_per_pack'))
                 //     ->numeric()
                 //     ->sortable(),
