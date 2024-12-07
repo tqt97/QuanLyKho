@@ -75,11 +75,11 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->renderHook(
+            // ->renderHook(
                 // PanelsRenderHook::BODY_END,
-                PanelsRenderHook::FOOTER,
-                fn() => view('filament.footer')
-            )
+                // PanelsRenderHook::FOOTER,
+                // fn() => view('filament.footer')
+            // )
             // ->collapsibleNavigationGroups(false)
             ->sidebarCollapsibleOnDesktop()
             ->sidebarFullyCollapsibleOnDesktop()
