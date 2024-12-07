@@ -25,7 +25,7 @@ return new class extends Migration
 
             // additional information
             $table->text('description')->nullable();
-            $table->string('image')->nullable();
+            $table->text('image')->nullable();
 
             $table->text('dosage')->nullable(); // lieu dung
             $table->string('duration')->nullable(); // thoi gian su dung
