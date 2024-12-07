@@ -70,6 +70,9 @@ class Product extends Model
 
     public function getUrlImage()
     {
+        if(str_contains($this->image, 'https://cdn-images')) {
+            return $this->image;
+        }
         if ($this->image) {
             return asset('storage/' . $this->image);
         }
