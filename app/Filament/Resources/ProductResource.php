@@ -158,7 +158,7 @@ class ProductResource extends Resource
                                 TextInput::make('dosage')
                                     ->label(__('shop/product.dosage'))
                                     // ->rows(3)
-                                    ->required()
+                                    // ->required()
                                     ->columnSpanFull()
                                     ->suffixAction(
                                         Forms\Components\Actions\Action::make('copy')
